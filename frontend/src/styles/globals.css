@@ -32,6 +32,10 @@ body {
   }
 } */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --color-white: #ffffff;
   --color-black: #1F1F1F;
