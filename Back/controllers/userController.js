@@ -8,7 +8,7 @@ class userController{
     async registerUser(req,res){
         try {
             const{username, password, email} = req.body;
-            console.log(username, password, email);fui
+            console.log(username, password, email);
             
             if (!username) return res.status(400).send("É necessario um nome de usuario!")
             if (!password) return res.status(400).send("É necessario uma senha!")
