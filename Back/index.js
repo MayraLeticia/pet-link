@@ -1,16 +1,18 @@
 const express = require("express");
 const cors = require("cors");
+require('dotenv').config();
 const app = express();
 const PORT = 3000;
 const conn = require("./db/conn");
+const routes = require('./routes/index.routes')
 
-app.use(cors);
 conn();
 
+
+app.use(cors);
 app.use(express.json())
 
-const routes = require('./routes/index.routes')
-app.use('/apí', routes)
+app.use('/api', routes)
 
 
 
