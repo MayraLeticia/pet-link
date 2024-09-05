@@ -3,10 +3,10 @@ import Google from "../../public/icons/Google.png";
 import Meta from "../../public/icons/Meta.png";
 import Image from "../../public/image.svg";
 
-const Login = () => {
+const Register = () => {
     return (
        
-        <div id="login" className="w-screen h-screen flex flex-row justify-center items-center"> 
+        <div id="register" className="w-screen h-screen flex flex-row justify-center items-center"> 
           <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2">
             <div className="flex-grow-0 flex-shrink-0">
                 <img
@@ -52,7 +52,7 @@ const Login = () => {
             <div id="mensage" class="flex flex-col justify-start items-center gap-[18px]">
               <div class=" flex justify-center items-center flex-row flex-grow-0 flex-shrink-0 ">
                 <p class="text-4xl font-bold text-center text-[#212334]">
-                  Olá de novo!
+                    Bem-vindo(a)!
                 </p>
                 <svg  
                   width="39"
@@ -86,21 +86,25 @@ const Login = () => {
                 </svg>
               </div>
               <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
-                Bem-vindo de volta á plataforma, entre e divirta-se!
+                Seja Bem-vindo á plataforma, entre e divirta-se!
               </p>
             </div>
             <div id="form" className="flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-8">
-              <Input placeholder="Nome de usuário ou e-mail" width="w-[536.96px]"/>
-              <Input placeholder="Senha" width="w-[536.96px]"/>   
+              <Input placeholder="Nome de usuário" width="w-[536.96px]"/>
+              <Input placeholder="E-mail" width="w-[536.96px]"/>
+              <div className="flex flex-row justify-center items-center w-full self-stretch flex-grow-0 flex-shrink-0 gap-5">
+                <Input placeholder="Senha" width="w-64"/>   
+                <Input placeholder="Confirmar senha" width="w-64"/>   
+              </div>
             </div>
-            <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-[220px]">
+            <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-40">
               <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
-                <a>Esqueceu a senha?</a>
+                Já possui uma conta? <a>Login</a>
               </p>
               <Checkbox nome="Mostrar senha"/>
             </div>
             <Button 
-                name="Entrar"
+                name="Registrar-se"
                 width="w-[536.96px]"
                 heith="h-[73.51px]"
                 color="bg-[#ffa2df]"
@@ -162,14 +166,6 @@ const Login = () => {
                     border="border-[#d6ddea]"
                 />
             </div>
-            <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-1">
-                <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464]">
-                    Não possui uma conta?
-                </p>
-                <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#407bff] cursor-pointer">
-                   <a>Registre-se</a> 
-                </p>
-            </div>
 
 
 
@@ -181,4 +177,4 @@ const Login = () => {
 }
 
 
-export default Login;
+export default Register;
