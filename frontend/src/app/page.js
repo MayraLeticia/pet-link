@@ -1,14 +1,13 @@
 import Image from "next/image";
-import { Button, Input, Password } from "../components";
+import Register from "../pages/register";
 
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      
-    <Button />
-    <Input />
-    <Password />
+    <main className="flex h-screen flex-row items-center justify-center">
+    
+    <Register
+    />
       
     </main>
   );
