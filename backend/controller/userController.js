@@ -95,23 +95,7 @@ class userController{
 
 
 
-    /*async addPetUserProgile(req,res){
-        const{userId}=req.params;
-        const{petId}= req.body;
-        if(!userId) return res.status(200).json({message:'Usuário não encontrado!'})
-        if(!petId)return res.status(400).json({message:'Paramentros necessarios não encontrados'})
-
-        try {
-            const userSelected = await User.findById(userId)
-            const newPet={petId}
-            
-        } catch (error) {
-            
-       
-       }
-
-    }*/
-
+    
 
 }
 module.exports={userController};
