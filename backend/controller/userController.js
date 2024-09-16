@@ -92,7 +92,9 @@ class userController{
         }
     }
 
-
+    async addPetInUserPorgile(req,res){
+        
+    }
 
 
     
