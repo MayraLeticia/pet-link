@@ -1,24 +1,44 @@
+
+"use client";
+import React, { useState } from 'react';
+import api from '../services/api';
+
 import { Button, Checkbox, Input } from "../components";
-import Google from "../../public/icons/Google.png";
-import Meta from "../../public/icons/Meta.png";
-import Image from "../../public/image.svg";
+// import Google from "../../public/icons/Google.png";
+// import Meta from "../../public/icons/Meta.png";
 
 const Login = () => {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post('api/user/login', { email, password });
+      localStorage.setItem('token', response.data.token); // Salvar o token no localStorage
+      alert('Login realizado com sucesso!');
+      console.log(response.data); // Ver detalhes da resposta
+    } catch (error) {
+      alert(error.response.data); // Exibir o erro retornado pelo back-end
+    }
+  };
+
     return (
        
         <div id="login" className="w-screen h-screen flex flex-row justify-center items-center"> 
           <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2">
             <div className="flex-grow-0 flex-shrink-0">
-                <img
+                {/* <img
                     src="design-sem-nome-(6)-1.png"
                     className="w-[67px] h-[67px] absolute left-[9.5px] top-[14.5px] object-cover"
-                />
+                /> */}
                 <p className="absolute left-[77px] top-6 text-[32px] font-semibold text-left text-[#4d87fc]">
                     Pet Link
                 </p>
             </div>
             <div id="init" className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-12">
-                <img src={Image} alt="bichinhos" className="w-96 h-96"></img>
+                <img src='/image.svg' alt="bichinhos" className="w-96 h-96"/>
                 <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-6">
                     <p className="self-stretch flex-grow-0 flex-shrink-0 text-3xl font-bold text-center text-[#212334]">
                         O seu bichinho tambêm merece amor.
@@ -48,8 +68,8 @@ const Login = () => {
             </div>
           </div>
            
-          <div id="right-side" className="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-11 h-screen w-1/2">
-            <div id="mensage" class="flex flex-col justify-start items-center gap-[18px]">
+          <form  onSubmit={handleLogin} id="right-side" className="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-6 h-screen w-1/2 py-7 px-28">
+            <div id="mensage" class="flex flex-col justify-start items-center gap-4">
               <div class=" flex justify-center items-center flex-row flex-grow-0 flex-shrink-0 ">
                 <p class="text-4xl font-bold text-center text-[#212334]">
                   Olá de novo!
@@ -89,24 +109,25 @@ const Login = () => {
                 Bem-vindo de volta á plataforma, entre e divirta-se!
               </p>
             </div>
-            <div id="form" className="flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-8">
-              <Input placeholder="Nome de usuário ou e-mail" width="w-[536.96px]"/>
-              <Input placeholder="Senha" width="w-[536.96px]"/>   
-            </div>
-            <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-[220px]">
-              <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
-                <a>Esqueceu a senha?</a>
-              </p>
-              <Checkbox nome="Mostrar senha"/>
-            </div>
-            <Button 
+              <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
+                <Input placeholder="Nome de usuário ou e-mail" width="w-full" onChange={(e) => setEmail(e.target.value)}/>
+                <Input placeholder="Senha" width="w-full" onChange={(e) => setPassword(e.target.value)}/>   
+              </div>
+              <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-[220px]">
+                <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
+                  <a>Esqueceu a senha?</a>
+                </p>
+                <Checkbox nome="Mostrar senha"/>
+              </div>
+              <Button 
+                type="submit"
                 name="Entrar"
-                width="w-[536.96px]"
-                heith="h-[73.51px]"
+                width="w-full"
+                heigth="h-16"
                 color="bg-[#ffa2df]"
                 border="border-[#fc7bcf]"
                 className="hover:bg-[#fc7bcf]"
-            />
+              />
             <div class="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 ">  
                 <svg
                     width="241"
@@ -146,18 +167,18 @@ const Login = () => {
                     </path>
                 </svg>
             </div>
-            <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-[52px]">
+            <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
                 <Button 
-                    icon={Google}
+                    icon='/icons/Google.png'
                     width="w-[75px]"
-                    heith="h-[75px]"
+                    heigth="h-[75px]"
                     color="bg-[#e8f0fe]"
                     border="border-[#d6ddea]"
                 />
                 <Button 
-                    icon={Meta}
+                    icon="/icons/Meta.png"
                     width="w-[75px]"
-                    heith="h-[75px]"
+                    heigth="h-[75px]"
                     color="bg-[#e8f0fe]"
                     border="border-[#d6ddea]"
                 />
@@ -174,7 +195,7 @@ const Login = () => {
 
 
             
-           </div>
+           </form>
            
         </div>
     );

@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Register from "../pages/register";
+import Login from "../pages/login";
 
 
 export default function Home() {
   return (
-    <main className="flex h-screen flex-row items-center justify-center">
+    <main className="flex h-screen flex-row items-center justify-center w-screen">
     
-    <Register
+    <Login
     />
       
     </main>
