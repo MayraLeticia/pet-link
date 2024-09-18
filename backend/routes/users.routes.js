@@ -5,7 +5,7 @@ const userRoutes = express.Router();
 
 userRoutes.post('/register', new userController().registerUser);
 userRoutes.post('/login', new userController().loginUser);
-userRoutes.patch('update/:id', new userController().updateUser);
+userRoutes.patch('/update/:id', new userController().updateUser);
 userRoutes.delete('/remove/:id', new userController().deleteUser);
 userRoutes.get('/allUsers', new userController().getUser);
 
