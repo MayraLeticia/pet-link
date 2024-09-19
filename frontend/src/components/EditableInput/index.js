@@ -6,6 +6,7 @@ import api from '../../services/api'; // Usando a instância personalizada
 const EditableInput = ({ label, apiEndpoint }) => {
     const [value, setValue] = useState(''); // Valor inicial vazio
     const [loading, setLoading] = useState(true); // Estado de loading para indicar o carregamento
+    const [isFocused, setIsFocused] = useState(false);
 
     // Fetch de dados para pegar o valor inicial de um banco de dados
     useEffect(() => {
@@ -28,14 +29,21 @@ const EditableInput = ({ label, apiEndpoint }) => {
     }
 
     return (
-        <div className="flex flex-col">
-        <label className="text-gray-400 mb-1">{label}</label>
-        <input
-            type="text"
-            className="bg-gray-800 text-white rounded-lg px-4 py-2 outline-none border border-transparent focus:border-gray-500 transition-colors"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-        />
+        <div className="relative w-full">
+            <input
+                type="text"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(value !== "")} // Mantém a label no topo se houver texto
+                className="bg-gray-900 text-white rounded-lg px-4 py-3 w-full outline-none border border-gray-600 focus:border-blue-500 transition-all"
+            />
+            <label
+                className={`absolute left-4 top-3 text-base text-gray-400 transition-all 
+                ${isFocused || value ? 'text-xs -top-4' : 'text-base top-3'}`}
+            >
+                {label}
+            </label>
         </div>
     );
 };
