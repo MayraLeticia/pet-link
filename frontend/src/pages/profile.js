@@ -28,7 +28,7 @@ const Profile = () => {
             <div id="Component-menu-lateral" className="flex flex-col justify-center items-center bg-custom-gradient h-full w-1/4">
             </div>
            
-            <div id="profile-container" className="flex  self-stretch flex-grow-0 flex-shrink-0 h-fit w-3/4 m-7">
+            <div id="profile-container" className="flex flex-col gap-10 self-stretch flex-grow-0 flex-shrink-0 h-fit w-3/4 m-7">
                 <div id="mensage" className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
                     
                     <p className="text-2xl font-medium text-left text-[#4d87fc]">
@@ -75,17 +75,81 @@ const Profile = () => {
                 
                 </div>
 
-                <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative gap-12">
-                    <div>
-                    <EditableInput
-                        label="Nome de Usuário"
-                        apiEndpoint="/api/user/username" // Endpoint para pegar o valor inicial do campo
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+        
+                    {/* Imagem do perfil */}
+                    <div className="col-span-1 flex justify-center md:justify-center">
+                        <div className="relative">
+                            <img
+                                src="/path/to/profile-image.jpg" /* Adicione o caminho da imagem */
+                                alt="Profile"
+                                className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover bg-black"
+                            />
+                            <button className="relative bottom-8 left-24 bg-blue-500 text-white rounded-full p-2">
+                                <i className="fas fa-edit"></i> {/* Ícone de edição */}
+                            </button>
+                        </div>
+                    </div>
 
+                    {/* EditableInputs de texto */}
+                    <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="col-span-1">
+                            <EditableInput
+                                label="Nome"
+                                apiEndpoint="/api/profile/name" /* Atualize conforme sua API */
+                            />
+                        </div>
+                        <div className="col-span-1">
+                            <EditableInput
+                                label="Idade"
+                                apiEndpoint="/api/profile/age" /* Atualize conforme sua API */
+                            />
+                        </div>
+                        <div className="col-span-1 md:col-span-2 lg:col-span-2">
+                            <EditableInput
+                                label="Descrição"
+                                apiEndpoint="/api/profile/description" /* Atualize conforme sua API */
+                            />
+                        </div>
+                        <div className="col-span-2">
+                            <EditableInput
+                                label="E-mail"
+                                apiEndpoint="/api/profile/email" /* Atualize conforme sua API */
+                            />
+                        </div>
+                        <div className="col-span-2">
+                            <EditableInput
+                                label="Endereço"
+                                apiEndpoint="/api/profile/address" /* Atualize conforme sua API */
+                            />
+                        </div>
+                        <div className="col-span-1">
+                            <EditableInput
+                                label="Espécie"
+                                apiEndpoint="/api/profile/species" /* Atualize conforme sua API */
+                            />
+                        </div>
+                        <div className="col-span-1">
+                            <EditableInput
+                                label="Raça"
+                                apiEndpoint="/api/profile/breed" /* Atualize conforme sua API */
+                            />
+                        </div>
+                        <div className="col-span-1">
+                                <EditableInput
+                                    label="Altura"
+                                    apiEndpoint="/api/profile/height" /* Atualize conforme sua API */
+                                />
+                        </div>
+                        <div className="col-span-1">
+                                <EditableInput
+                                    label="Peso"
+                                    apiEndpoint="/api/profile/weight" /* Atualize conforme sua API */
+                                />
+                        </div>
                     </div>
                 </div>
-           </div>
-           
+            </div>
         </div>
     );
 }
