@@ -92,7 +92,26 @@ class userController{
         }
     }
 
-    async addPetInUserPorgile(req,res){
+    async addPetInUserPorfile(req,res){
+        const {userId}= req.params
+        const{petId}= req.body
+
+        if(!userId)return res.status(200).json({message:'Usuário não encontrado!'});
+        if(!petId) return res.status(400).json({message:'Parametros necessarios nã encontrados'})
+        
+        try {
+            const userSelected = await User.findById(userId)
+            const newPet = {petId}
+            
+            await User.findByIdAndUpdate(userId,{
+                yourAnimal:[...userSelected.yourAnimal, newPet]
+            })
+            res.status(200).json({message: 'Pet adicionado com sucesso'})
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({message:'Internal server error!'});
+        }
+
         
     }
 
