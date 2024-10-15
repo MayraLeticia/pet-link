@@ -96,8 +96,8 @@ class userController{
         const {userId}= req.params
         const{petId}= req.body
 
-        if(!userId)return res.status(200).json({message:'Usuário não encontrado!'});
-        if(!petId) return res.status(400).json({message:'Parametros necessarios nã encontrados'})
+        if(!userId)return res.status(400).json({message:'Usuário não encontrado!'});
+        if(!petId) return res.status(400).json({message:'Parametros necessarios não encontrados'})
         
         try {
             const userSelected = await User.findById(userId)
@@ -115,6 +115,16 @@ class userController{
         
     }
 
+    async getUserByid(req,res){
+        const{userId} = req.params
+        try {
+            const userSelected = await User.findById(userId)
+            return res.status(200).json(userSelected)
+        } catch (error) {
+            console.error(error);
+            return res.status(404).json({message:'Usuario não encontrado!'})
+        }
+    }
 
     
 

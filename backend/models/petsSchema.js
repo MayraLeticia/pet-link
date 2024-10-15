@@ -8,7 +8,8 @@ const PetsSchema = new mongoose.Schema({
     description:{type: String, require: false},
     weight:{type: String,require: true},
     specie:{type:String, require:true},
-    location:{type: String}
+    location:{type: String},
+    imgAnimal:{type:[{}], default:[]}
 })
 
 module.exports = mongoose.model('Pet', PetsSchema);

@@ -1,5 +1,5 @@
 const Pet = require('../models/petsSchema');
-const bcrypt= require('bcrypt');
+
 
 class petsController{
 
@@ -53,7 +53,42 @@ class petsController{
         }
     }
 
+    async getPetsById(req,res){
+        const petsId = req.params
+        try {
+            const petsSelected =  await Pet.findById(petsId)
+            return res.status(200).json(petsSelected)
 
+            
+        } catch (error) {
+            console.error(error)
+            return res.status(404).json({messafe: 'Pet não encontrado'})
+        }
+    }
+
+    async addImgPetInPets(req,res){
+        const{petId}=req.params
+        const {imgId}= req.body
+
+        if (!petId)return res.status(400).json({message:"Pet não encontrado!"});
+        if(!imgId)return res.status(400).json({message:"Paramentros necessarios não encontrados"});
+
+        try {
+            const petsSelected = await Pet.findById(petId)
+            const newImg= {imgId}
+            
+            await Pet.findByIdAndUpdate(petId,{
+                imgAnimal:[...petsSelected.imgAnimal, newImg]
+            });
+            res.status(200).json({message:'Imagem adicionado com sucesso'})
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({message:'Internal server error!'})
+        }
+    
+
+    }
 }
 
 module.exports= {petsController};
