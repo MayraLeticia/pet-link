@@ -184,17 +184,19 @@ const Register = () => {
             </svg>
         </div>
         <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
-          <Button 
+          <Button
             icon='/icons/Google.png'
+            onClick={() => signIn('google')}
             width="w-[75px]"
-            heigth="h-[75px]"
+            height="h-[75px]"
             color="bg-[#e8f0fe]"
             border="border-[#d6ddea]"
           />
-          <Button 
-            icon="/icons/Meta.png"
+          <Button
+            icon='/icons/Meta.png'
+            onClick={() => signIn('facebook')}
             width="w-[75px]"
-            heigth="h-[75px]"
+            height="h-[75px]"
             color="bg-[#e8f0fe]"
             border="border-[#d6ddea]"
           />
