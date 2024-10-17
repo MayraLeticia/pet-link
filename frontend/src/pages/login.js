@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import api from '../services/api';
 
 import { Button, Checkbox, Input } from "../components";
+import { signIn } from 'next-auth/react';
 // import Google from "../../public/icons/Google.png";
 // import Meta from "../../public/icons/Meta.png";
 
@@ -168,19 +169,20 @@ const Login = () => {
                 </svg>
             </div>
             <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
-                <Button 
-                    icon='/icons/Google.png'
-                    width="w-[75px]"
-                    heigth="h-[75px]"
-                    color="bg-[#e8f0fe]"
-                    border="border-[#d6ddea]"
+                <Button
+                  icon='/icons/Google.png'
+                  onClick={() => signIn('google')}
+                  width="w-[75px]"
+                  height="h-[75px]"
+                  color="bg-[#e8f0fe]"
+                  border="border-[#d6ddea]"
                 />
                 <Button 
-                    icon="/icons/Meta.png"
-                    width="w-[75px]"
-                    heigth="h-[75px]"
-                    color="bg-[#e8f0fe]"
-                    border="border-[#d6ddea]"
+                  icon="/icons/Meta.png"
+                  width="w-[75px]"
+                  heigth="h-[75px]"
+                  color="bg-[#e8f0fe]"
+                  border="border-[#d6ddea]"
                 />
             </div>
             <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-1">
