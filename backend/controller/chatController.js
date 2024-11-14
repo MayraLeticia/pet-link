@@ -1,7 +1,7 @@
 const Message = require('../models/messageSchema');
 const User = require('../models/userSchema');
 
-class ChatController {
+class chatController {
     async sendMessage(req, res) {
         try {
             const { senderId, receiverId, content } = req.body;
@@ -38,4 +38,4 @@ class ChatController {
     }
 }
 
-module.exports = new ChatController();
+module.exports = {chatController};
