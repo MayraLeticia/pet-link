@@ -4,12 +4,21 @@ import React, { useState } from 'react';
 import api from '../services/api';
 
 import { Button, Checkbox, Input } from "../components";
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 // import Google from "../../public/icons/Google.png";
 // import Meta from "../../public/icons/Meta.png";
 
+// const YourComponent = () => {
+//   const { data: session } = useSession();
+//   if (session) {
+//     return <p>Logado como {session.user.email}</p>;
+//   }
+//   return <p>Não está logado</p>;
+// };
+
 const Login = () => {
 
+  const { data: session } = useSession(); //verifica se o usuário está logado e exibir informações, como o email do usuário, na interface
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,6 +33,7 @@ const Login = () => {
       alert(error.response.data); // Exibir o erro retornado pelo back-end
     }
   };
+
 
     return (
        
@@ -109,7 +119,13 @@ const Login = () => {
               <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
                 Bem-vindo de volta á plataforma, entre e divirta-se!
               </p>
-            </div>
+              {/* Exibe o estado da sessão */}
+              {session ? (
+                <p className="text-green-500">Logado como {session.user.email}</p>
+              ) : (
+                <p className="text-red-500">Não está logado</p>
+              )}
+                </div>
               <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
                 <Input placeholder="Nome de usuário ou e-mail" width="w-full" onChange={(e) => setEmail(e.target.value)}/>
                 <Input placeholder="Senha" width="w-full" onChange={(e) => setPassword(e.target.value)}/>   
@@ -177,10 +193,11 @@ const Login = () => {
                   color="bg-[#e8f0fe]"
                   border="border-[#d6ddea]"
                 />
-                <Button 
-                  icon="/icons/Meta.png"
+                <Button
+                  icon='/icons/Meta.png'
+                  onClick={() => signIn('facebook')}
                   width="w-[75px]"
-                  heigth="h-[75px]"
+                  height="h-[75px]"
                   color="bg-[#e8f0fe]"
                   border="border-[#d6ddea]"
                 />

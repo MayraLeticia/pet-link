@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import api from '../services/api';
+import { signIn } from 'next-auth/react';
 
 import { Button, Checkbox, Input } from "../components";
 import Google from "../../public/icons/Google.png";
@@ -186,7 +187,7 @@ const Register = () => {
         <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
           <Button
             icon='/icons/Google.png'
-            onClick={() => signIn('google')}
+            onClick={() => signIn('google')} // inicia o fluxo de autenticação do Google quando o botão é clicado
             width="w-[75px]"
             height="h-[75px]"
             color="bg-[#e8f0fe]"
