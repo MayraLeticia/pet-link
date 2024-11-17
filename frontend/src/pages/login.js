@@ -127,7 +127,7 @@ const Login = () => {
               )}
                 </div>
               <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
-                <Input placeholder="Nome de usuário ou e-mail" width="w-full" onChange={(e) => setEmail(e.target.value)}/>
+                <Input placeholder="E-mail" width="w-full" onChange={(e) => setEmail(e.target.value)}/>
                 <Input placeholder="Senha" width="w-full" onChange={(e) => setPassword(e.target.value)}/>   
               </div>
               <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-[220px]">

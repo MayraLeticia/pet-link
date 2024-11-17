@@ -30,7 +30,13 @@ const Register = () => {
       alert('Usuário registrado com sucesso!');
       console.log(response.data); // Mostrar resposta no console para depuração
     } catch (error) {
-      alert(error.response.data); // Mostrar erro retornado pelo backend
+      if (error.response) {
+        // Se houver uma resposta da API, mostre os dados da resposta de erro
+        alert(error.response.data); 
+      } else {
+        // Caso não haja resposta, exiba uma mensagem de erro genérica
+        alert("Erro na comunicação com o servidor. Tente novamente mais tarde.");
+      }
     }
   };
 
