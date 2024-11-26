@@ -1,5 +1,7 @@
 "use client";
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import api from '../services/api';
 
 import { EditableInput } from "../components";
@@ -21,6 +23,84 @@ const Profile = () => {
 //     }
 //   };
 
+    const router = useRouter();
+    const [user, setUser] = useState(null);
+    const [pet, setPet] = useState({
+        name: "",
+        age: "",
+        weight: "",
+        height: "",
+        description: "",
+    });
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+          router.push('/login'); // Redirecionar para login se não houver token
+        // } else {
+        //   // Buscar dados do usuário usando o token
+        //   api.get('/api/user/profile', {
+        //     headers: { Authorization: `Bearer ${token}` },
+        //   })
+        //     .then((response) => setUser(response.data))
+        //     .catch(() => {
+        //       alert('Erro ao carregar dados do usuário');
+        //       router.push('/login'); // Redirecionar caso o token seja inválido
+        //     });
+            return;
+        }
+
+        const fetchUserAndPet = async () => {
+            try {
+                const userId = JSON.parse(atob(token.split(".")[1])).sub; // Decodificar o ID do usuário do token
+                console.log("userId:",userId);
+
+                const userResponse = await api.get(`/user/getUserId/:${userId}`);
+                setUser(userResponse.data);
+        
+                if (userResponse.data?.yourAnimal?.[0]?.petId) {
+                    const petResponse = await api.get(`/pet/${userResponse.data.yourAnimal[0].petId}`);
+                    setPet(petResponse.data);
+                }
+            } catch (error) {
+              console.error("Erro ao carregar informações:", error);
+              alert("Erro ao carregar informações");
+              router.push("/login");
+            }
+        };
+
+        fetchUserAndPet();
+
+    }, [router]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setPet({ ...pet, [name]: value });
+    };
+    
+    const handleSavePet = async () => {
+        try {
+            if (pet._id) {
+                // Atualizar pet existente
+                await api.patch(`/pet/updatePet/${pet._id}`, pet);
+                alert("Informações do pet atualizadas com sucesso!");
+            } else {
+                // Registrar novo pet
+                const response = await api.post("/pet/registerPet", pet);
+                await api.post(`/user/addNewPet/${user._id}`, { petId: response.data._id });
+                alert("Pet registrado com sucesso!");
+            }
+        } catch (error) {
+            console.error("Erro ao salvar informações do pet:", error);
+            alert("Erro ao salvar informações do pet.");
+        }
+    };
+    
+    if (!user) {
+        return <p>Carregando...</p>; // Exibir enquanto os dados carregam
+    }
+
     return (
 
        //isso deve ser mudado depois, vou fazer um layout com a parte do Component menu lateral
@@ -36,9 +116,9 @@ const Profile = () => {
                     </p>
                     <div className="flex flex-row justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
                         <p className="text-sm font-medium text-left">
-                            <span className="text-sm font-medium text-left text-black">Welcome, </span>
+                            <span className="text-sm font-medium text-left text-black">Bem vindo, </span>
                             {/* //mudar pro nome do usuário */}
-                            <span className="text-sm font-medium text-left text-[#ffa2df]">user</span> 
+                            <span className="text-sm font-medium text-left text-[#ffa2df]">{user.username}</span> 
                             <span className="text-sm font-medium text-left text-black">!</span>
                         </p>
                         <svg
@@ -91,63 +171,104 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    {/* EditableInputs de texto */}
+                    {/* EditableInputs de texto
                     <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="col-span-1">
                             <EditableInput
                                 label="Nome"
-                                apiEndpoint="/api/profile/name" /* Atualize conforme sua API */
+                                apiEndpoint="/api/profile/name" // Atualize conforme sua API 
                             />
                         </div>
                         <div className="col-span-1">
                             <EditableInput
                                 label="Idade"
-                                apiEndpoint="/api/profile/age" /* Atualize conforme sua API */
+                                apiEndpoint="/api/profile/age" // Atualize conforme sua API 
                             />
                         </div>
                         <div className="col-span-1 md:col-span-2 lg:col-span-2">
                             <EditableInput
                                 label="Descrição"
-                                apiEndpoint="/api/profile/description" /* Atualize conforme sua API */
+                                apiEndpoint="/api/profile/description" // Atualize conforme sua API 
                             />
                         </div>
                         <div className="col-span-2">
                             <EditableInput
                                 label="E-mail"
-                                apiEndpoint="/api/profile/email" /* Atualize conforme sua API */
+                                apiEndpoint="/api/profile/email" // Atualize conforme sua API 
                             />
                         </div>
                         <div className="col-span-2">
                             <EditableInput
                                 label="Endereço"
-                                apiEndpoint="/api/profile/address" /* Atualize conforme sua API */
+                                apiEndpoint="/api/profile/address" // Atualize conforme sua API 
                             />
                         </div>
                         <div className="col-span-1">
                             <EditableInput
                                 label="Espécie"
-                                apiEndpoint="/api/profile/species" /* Atualize conforme sua API */
+                                apiEndpoint="/api/profile/species" // Atualize conforme sua API 
                             />
                         </div>
                         <div className="col-span-1">
                             <EditableInput
                                 label="Raça"
-                                apiEndpoint="/api/profile/breed" /* Atualize conforme sua API */
+                                apiEndpoint="/api/profile/breed" // Atualize conforme sua API 
                             />
                         </div>
                         <div className="col-span-1">
                                 <EditableInput
                                     label="Altura"
-                                    apiEndpoint="/api/profile/height" /* Atualize conforme sua API */
+                                    apiEndpoint="/api/profile/height" // Atualize conforme sua API 
                                 />
                         </div>
                         <div className="col-span-1">
                                 <EditableInput
                                     label="Peso"
-                                    apiEndpoint="/api/profile/weight" /* Atualize conforme sua API */
+                                    apiEndpoint="/api/profile/weight" // Atualize conforme sua API 
                                 />
                         </div>
-                    </div>
+                    </div> */}
+
+                    <form>
+                        <h2>Informações do Pet</h2>
+                        <input
+                            type="text"
+                            name="name"
+                            value={pet.name}
+                            placeholder="Nome"
+                            onChange={handleInputChange}
+                        />
+                        <input
+                            type="number"
+                            name="age"
+                            value={pet.age}
+                            placeholder="Idade"
+                            onChange={handleInputChange}
+                        />
+                        <input
+                            type="number"
+                            name="weight"
+                            value={pet.weight}
+                            placeholder="Peso"
+                            onChange={handleInputChange}
+                        />
+                        <input
+                            type="number"
+                            name="height"
+                            value={pet.height}
+                            placeholder="Altura"
+                            onChange={handleInputChange}
+                        />
+                        <textarea
+                            name="description"
+                            value={pet.description}
+                            placeholder="Descrição"
+                            onChange={handleInputChange}
+                        />
+                        <button type="button" onClick={handleSavePet}>
+                            Salvar Informações
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

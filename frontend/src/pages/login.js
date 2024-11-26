@@ -210,7 +210,11 @@ const Login = () => {
                     Não possui uma conta?
                 </p>
                 <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#407bff] cursor-pointer">
-                   <a>Registre-se</a> 
+                   <a onClick = {() => {
+                        router.push(`/register`); // Altere para a rota desejada
+                      }}
+                    >
+                    Registre-se</a> 
                 </p>
             </div>
 
