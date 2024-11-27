@@ -6,15 +6,31 @@ import api from '../services/api';
 
 import { Card } from "../components";
 
-const Profile = () => {
+const Feed = () => {
+
+    const [pets, setPets] = useState([]);
+
+    useEffect(() => {
+        const fetchPets = async () => {
+            try {
+                const response = await api.get('/api/pet/allPets');
+                setPets(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar pets:", error);
+                alert("Erro ao carregar os dados dos pets.");
+            }
+        };
+
+        fetchPets();
+    }, []);
 
     return (
-        <div id="profile" className="w-screen h-screen flex flex-row justify-center items-center"> 
+        <div id="profile" className="w-screen h-screen flex flex-row justify-center items-center">
             <div id="Component-menu-lateral" className="bg-custom-gradient h-full w-1/4"></div>
-           
+
             <div id="home-container" className="flex flex-col gap-10 self-stretch flex-grow-0 flex-shrink-0 h-fit w-3/4 m-7">
                 <div id="mensage" className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
-                    
+
                     <p className="text-2xl font-medium text-left text-[#4d87fc]">
                         Ache seu parceiro!
                     </p>
@@ -22,26 +38,24 @@ const Profile = () => {
                         <p className="text-sm font-medium text-left">
                             <span className="text-sm font-medium text-left text-black">Resultado para </span>
                             {/* //mudar pro numero de usuários */}
-                            <span className="text-sm font-medium text-left text-[#ffa2df]">xxx</span> 
+                            <span className="text-sm font-medium text-left text-[#ffa2df]">{pets.length}</span>
                             <span className="text-sm font-medium text-left text-black"> animais</span>
                         </p>
-                    </div>  
-                </div>  
+                    </div>
+                </div>
 
-                <div id='feed-container' className="grid grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-3"> 
-              
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
+                <div id='feed-container' className="grid grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-3">
+
+                    {pets.map((pet) => (
+                        <Card
+                            key={pet._id}
+                            profilePhoto={pet.imgAnimal?.[0]?.url || "placeholder.jpg"}
+                            name={pet.name}
+                            location={pet.location || "Localização não informada"}
+                        />
+                    ))}
+
+                    
                     {/* <div id='card' className="w-60 h-60 rounded-lg bg-custom-gradient flex flex-col">
                         <div className="w-full h-3/4">
                         
@@ -82,4 +96,4 @@ const Profile = () => {
 }
 
 
-export default Profile;
+export default Feed;
