@@ -1,5 +1,6 @@
 const express = require('express');
 const {petsController} = require('../controller/petsController');
+
 const {imgController}= require('../controller/imgController')
 const multer = require('multer');
 const multerConfig = require('../config/multer');
@@ -12,6 +13,7 @@ petsRoutes.post('/registerPet', new petsController().registerPets);
 petsRoutes.delete('/deletePet/:id', new petsController().deletePet);
 petsRoutes.patch('/updatePet/:id', new petsController().updatePet);
 petsRoutes.get('/allPets', new petsController().getPets);
+petsRoutes.get('/:id', new petsController().getPetsById);
 petsRoutes.post('/addImg/:petId', new petsController().addImgPetInPets);
 petsRoutes.get('/getImgId/:imgId', new imgController().getImgById);
 petsRoutes.get('/aLLimg', new imgController().getImgs)

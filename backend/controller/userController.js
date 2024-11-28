@@ -94,7 +94,7 @@ class userController{
 
     async addPetInUserPorfile(req,res){
         const {userId}= req.params
-        const{petId}= req.body
+        const {petId}= req.body
 
         if(!userId)return res.status(400).json({message:'Usuário não encontrado!'});
         if(!petId) return res.status(400).json({message:'Parametros necessarios não encontrados'})

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 import { Button, Checkbox, Input } from "../components";
 import Google from "../../public/icons/Google.png";
@@ -9,6 +10,9 @@ import Meta from "../../public/icons/Meta.png";
 import Image from "../../public/image.svg";
 
 const Register = () => {
+  
+  const router = useRouter(); // Hook para navegação
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,11 +32,12 @@ const Register = () => {
     try {
       const response = await api.post('api/user/register', { username, email, password });
       alert('Usuário registrado com sucesso!');
+      router.push('/profile'); // Redirecionar para a página de perfil
       console.log(response.data); // Mostrar resposta no console para depuração
     } catch (error) {
       if (error.response) {
         // Se houver uma resposta da API, mostre os dados da resposta de erro
-        alert(error.response.data); 
+        alert(error.response?.data || "Erro ao fazer registro"); // Exibir erro retornado pelo backend
       } else {
         // Caso não haja resposta, exiba uma mensagem de erro genérica
         alert("Erro na comunicação com o servidor. Tente novamente mais tarde.");
@@ -138,7 +143,13 @@ const Register = () => {
         </div>
         <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-40">
           <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
-            Já possui uma conta? <a>Login</a>
+            Já possui uma conta? 
+            <a  className='text-[#407bff] cursor-pointer' 
+                onClick = {() => {
+                  router.push(`/login`); // Altere para a rota desejada
+                }}
+            >
+            Login</a>
           </p>
           <Checkbox nome="Mostrar senha"/>
         </div>

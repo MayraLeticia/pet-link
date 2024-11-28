@@ -2,6 +2,7 @@
 "use client";
 import React, { useState } from 'react';
 import api from '../services/api';
+import { useRouter } from 'next/router';
 
 import { Button, Checkbox, Input } from "../components";
 import { signIn, useSession } from 'next-auth/react';
@@ -18,7 +19,8 @@ import { signIn, useSession } from 'next-auth/react';
 
 const Login = () => {
 
-  const { data: session } = useSession(); //verifica se o usuário está logado e exibir informações, como o email do usuário, na interface
+  const router = useRouter(); // Hook para navegação
+  // const { data: session } = useSession(); //verifica se o usuário está logado e exibir informações, como o email do usuário, na interface
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -28,9 +30,10 @@ const Login = () => {
       const response = await api.post('api/user/login', { email, password });
       localStorage.setItem('token', response.data.token); // Salvar o token no localStorage
       alert('Login realizado com sucesso!');
-      console.log(response.data); // Ver detalhes da resposta
+      router.push('/profile'); // Redirecionar para a página de perfil
+      // console.log(response.data); // Ver detalhes da resposta
     } catch (error) {
-      alert(error.response.data); // Exibir o erro retornado pelo back-end
+      alert(error.response?.data || "Erro ao fazer login"); // Exibir erro retornado pelo backend
     }
   };
 
@@ -119,12 +122,12 @@ const Login = () => {
               <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
                 Bem-vindo de volta á plataforma, entre e divirta-se!
               </p>
-              {/* Exibe o estado da sessão */}
+              {/* Exibe o estado da sessão
               {session ? (
                 <p className="text-green-500">Logado como {session.user.email}</p>
               ) : (
                 <p className="text-red-500">Não está logado</p>
-              )}
+              )} */}
                 </div>
               <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
                 <Input placeholder="E-mail" width="w-full" onChange={(e) => setEmail(e.target.value)}/>
@@ -207,7 +210,11 @@ const Login = () => {
                     Não possui uma conta?
                 </p>
                 <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#407bff] cursor-pointer">
-                   <a>Registre-se</a> 
+                   <a onClick = {() => {
+                        router.push(`/register`); // Altere para a rota desejada
+                      }}
+                    >
+                    Registre-se</a> 
                 </p>
             </div>
 

@@ -1,8 +1,11 @@
 "use client";
 import React from 'react';
 import { Button } from "../components";
+import { useRouter } from 'next/router';
 
 const Home = () => {
+
+    const router = useRouter();
 
     return (
 
@@ -675,6 +678,9 @@ const Home = () => {
                         color="bg-[#ffa2df]"
                         border="border-[#fc7bcf]"
                         className="hover:bg-[#fc7bcf]"
+                        onClick = {() => {
+                            router.push(`/login`); // Altere para a rota desejada
+                        }}
                     />
                     {/* <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-64 h-14 relative gap-2.5 px-6 py-3 rounded-2xl bg-[#ffa2df] border border-[#fc7bcf]">
                         <p className="flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-white">
@@ -709,6 +715,9 @@ const Home = () => {
                         color="bg-[#ffa2df]"
                         border="border-[#fc7bcf]"
                         className="hover:bg-[#fc7bcf]"
+                        onClick = {() => {
+                            router.push(`/login`); // Altere para a rota desejada
+                        }}
                     />
                     {/* <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-64 h-14 relative gap-2.5 px-6 py-3 rounded-2xl bg-[#ffa2df] border border-[#fc7bcf]">
                         <p className="flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-white">
