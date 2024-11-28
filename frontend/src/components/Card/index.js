@@ -1,7 +1,7 @@
-const Card = ({ profilePhoto, name, location }) => {
+const Card = ({ profilePhoto, name, location, onClick }) => {
 
     return (
-        <div id='card' className="w-60 h-60 rounded-lg bg-custom-gradient flex flex-col">
+        <div id='card' className="w-60 h-60 rounded-lg bg-custom-gradient flex flex-col cursor-pointer" onClick={onClick}>
             <div className="w-full h-3/4">
             
                 <img

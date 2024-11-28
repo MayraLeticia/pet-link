@@ -9,6 +9,8 @@ import { Card } from "../components";
 const Feed = () => {
 
     const [pets, setPets] = useState([]);
+    const [selectedPet, setSelectedPet] = useState(null); // Pet selecionado
+
 
     useEffect(() => {
         const fetchPets = async () => {
@@ -26,70 +28,72 @@ const Feed = () => {
 
     return (
         <div id="profile" className="w-screen h-screen flex flex-row justify-center items-center">
-            <div id="Component-menu-lateral" className="bg-custom-gradient h-full w-1/4"></div>
+            <div id="sidebar" className="bg-custom-gradient h-full w-1/5"></div>
 
-            <div id="home-container" className="flex flex-col gap-10 self-stretch flex-grow-0 flex-shrink-0 h-fit w-3/4 m-7">
-                <div id="mensage" className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
+            <div id="main-container" className="flex-grow h-full w-3/4 flex">
+                <div className="flex flex-col justify-start items-start py-5 px-10 gap-5">
+                    <div id="mensage" className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 gap-0">
 
-                    <p className="text-2xl font-medium text-left text-[#4d87fc]">
-                        Ache seu parceiro!
-                    </p>
-                    <div className="flex flex-row justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
-                        <p className="text-sm font-medium text-left">
-                            <span className="text-sm font-medium text-left text-black">Resultado para </span>
-                            {/* //mudar pro numero de usuários */}
-                            <span className="text-sm font-medium text-left text-[#ffa2df]">{pets.length}</span>
-                            <span className="text-sm font-medium text-left text-black"> animais</span>
+                        <p className="text-2xl font-medium text-left text-[#4d87fc]">
+                            Ache seu parceiro!
                         </p>
-                    </div>
-                </div>
-
-                <div id='feed-container' className="grid grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-3">
-
-                    {pets.map((pet) => (
-                        <Card
-                            key={pet._id}
-                            profilePhoto={pet.imgAnimal?.[0]?.url || "placeholder.jpg"}
-                            name={pet.name}
-                            location={pet.location || "Localização não informada"}
-                        />
-                    ))}
-
-                    
-                    {/* <div id='card' className="w-60 h-60 rounded-lg bg-custom-gradient flex flex-col">
-                        <div className="w-full h-3/4">
-                        
-                            <img
-                                src="image-5.png"
-                                className="w-full h-full object-cover rounded-t-lg"
-                            />
-                            recebe imagem do usuário 
-                            
-                            <div className='w-1/2 h-auto gap-5 flex relative left-40 -top-40'>
-                                <div className='w-6 h-6 flex items-center justify-center rounded-full bg-slate-950 bg-opacity-60'>
-                                    <img src="heart.png" className="w-[19px] h-[19px] object-cover" />
-                                </div>
-                                <div className='w-6 h-6 flex items-center justify-center rounded-full bg-slate-950 bg-opacity-60'>
-                                    <img src="dislike.png" className="w-[19px] h-[19px] object-cover" />
-                                </div>
-                            </div>
-                            
-                        </div>
-                        
-                        <div className="w-full h-1/4 rounded-r-lg p-2">
-                            <p className="text-sm font-medium text-left text-black">
-                                nome do usuário
+                        <div className="flex flex-row justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
+                            <p className="text-sm font-medium text-left">
+                                <span className="text-sm font-medium text-left text-black">Resultado para </span>
+                                <span className="text-sm font-medium text-left text-[#ffa2df]">{pets.length}</span>
+                                <span className="text-sm font-medium text-left text-black"> animais</span>
                             </p>
-                            <p className="text-xs font-normal text-left text-slate-950 opacity-25">distancia</p>
-                                
-                            <div className='w-6 h-6 flex items-center justify-center rounded-full bg-slate-950 bg-opacity-60 relative left-48 -top-7'>
-                                <img src="chat-bubbles-with-ellipsis.png" className="w-[19px] h-[19px] object-cover" />
-                            </div>
-
                         </div>
+                    </div>
+
+                    <div 
+                        id="cards-container" 
+                        className={`grid ${
+                            selectedPet ? " grid-cols-2 lg:grid-cols-3" : "grid-cols-3 lg:grid-cols-4"
+                        } gap-2 flex-grow transition-all duration-300 ${
+                            selectedPet ? "lg:w-auto" : "lg:w-full"
+                        }`}
+                    >
+
+                        {pets.map((pet) => (
+                            <Card
+                                key={pet._id}
+                                profilePhoto={pet.imgAnimal?.[0]?.url || "placeholder.jpg"}
+                                name={pet.name}
+                                location={pet.location || "Localização não informada"}
+                                onClick={() => setSelectedPet(pet)}
+                            />
+                        ))}
+
+                    </div>
+                </div>  
+
+                {selectedPet && (
+                    <div
+                        id="details-panel"
+                        className={`w-1/3 bg-custom-gradient p-4 transition-transform duration-300 ${
+                            selectedPet ? "translate-x-0" : "translate-x-full"
+                        }`}
+                    >
+                        <button onClick={() => setSelectedPet(null)} className="absolute top-4 right-4 text-white bg-gray-700 py-2 px-3 rounded-full">
+                            Fechar
+                        </button>
+                        <h2 className="text-2xl font-bold text-white">{selectedPet.name}</h2>
+                        <p className="text-white">Localização: {selectedPet.location}</p>
+                        <img
+                            src={selectedPet.imgAnimal?.[0]?.url || "placeholder.jpg"}
+                            alt={selectedPet.name}
+                            className="w-full h-64 object-cover rounded-lg mt-4"
+                        />
+                        <p className="text-white mt-4">{selectedPet.description}</p>
+                        <p className="text-white">Idade: {selectedPet.age}</p>
+                        <p className="text-white">Raça: {selectedPet.race}</p>
+                        <p className="text-white">Espécie: {selectedPet.specie}</p>
+                        
+                    </div>
+                )}
+                    
                 
-                    </div> */}
-                </div>
             </div>
         </div>
     );
