@@ -5,20 +5,22 @@ const ChatMessages = ({ selectedUser }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
 
+    const currentUserId = localStorage.getItem('userId');
+
     useEffect(() => {
-        // Substitua pela URL correta do seu backend
-        api.get(`/messages/${selectedUser._id}/currentUserId`) // Remova "/api"
+        
+        api.get(`/api/chat/messages/${selectedUser._id}/currentUserId`) 
             .then((res) => setMessages(res.data))
             .catch((error) => console.error('Erro ao buscar mensagens:', error));
     }, [selectedUser]);
 
     const sendMessage = () => {
         const messageData = {
-            senderId: 'currentUserId',
+            senderId: currentUserId,
             receiverId: selectedUser._id,
             content: newMessage,
         };
-        api.post('/send', messageData) // Remova "/api"
+        api.post('/api/chat/send', messageData) 
             .then((res) => {
                 setMessages([...messages, res.data.message]);
                 setNewMessage('');
