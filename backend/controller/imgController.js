@@ -39,5 +39,16 @@ class imgController{
             res.status(500).send('Erro ao obter as imagens')
         }
     }
+    async deleteImgs(req,res){
+        try {
+            const {id} = req.params;
+            const deleteImg = await Img.findByIdAndDelete(id);
+            if(!deleteImg)return res.status(404).send('Imgagem não encontrada');
+            res.status(200).send('Imagem deletada com sucesso!')
+        } catch (error) {
+            console.error(error)
+            res.status(500).send('Erro ao deletar o PET')
+        }
+    }
 }
 module.exports={imgController};

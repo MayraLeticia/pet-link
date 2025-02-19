@@ -1,4 +1,5 @@
 const Pet = require('../models/petsSchema');
+const Img = require('../models/imgSchema');
 
 
 class petsController{
@@ -66,29 +67,74 @@ class petsController{
         }
     }
 
-    async addImgPetInPets(req,res){
-        const{petId}=req.params
-        const {imgId}= req.body
-
-        if (!petId)return res.status(400).json({message:"Pet não encontrado!"});
-        if(!imgId)return res.status(400).json({message:"Paramentros necessarios não encontrados"});
-
+    async addImgPetInPets(req, res) {
+        const { petId } = req.params;
+        const { imgId } = req.body; 
+    
+        if (!petId) return res.status(400).json({ message: "Pet não encontrado!" });
+        if (!imgId) return res.status(400).json({ message: "Parâmetros necessários não encontrados!" });
+    
         try {
-            const petsSelected = await Pet.findById(petId)
-            const newImg= {imgId}
-            
-            await Pet.findByIdAndUpdate(petId,{
-                imgAnimal:[...petsSelected.imgAnimal, newImg]
+            const petsSelected = await Pet.findById(petId);
+            if (!petsSelected) {
+                return res.status(404).json({ message: "Pet não encontrado!" });
+            }
+    
+            // buscar a imagem pelo ID
+            const img = await Img.findById(imgId);
+            if (!img) {
+                return res.status(404).json({ message: "Imagem não encontrada!" });
+            }
+    
+            // Agora, podemos salvar a URL da imagem no pet
+            const newImg = {
+                imgId: img._id,
+                url: img.url  // Aqui salvamos a URL da imagem
+            };
+    
+            await Pet.findByIdAndUpdate(petId, {
+                $push: { imgAnimal: newImg } // Usando o operador $push para adicionar a imagem ao array
             });
-            res.status(200).json({message:'Imagem adicionado com sucesso'})
-
+    
+            res.status(200).json({ message: 'Imagem adicionada com sucesso!' });
+    
         } catch (error) {
             console.error(error);
-            return res.status(500).json({message:'Internal server error!'})
+            return res.status(500).json({ message: 'Erro interno no servidor!' });
         }
-    
-
     }
+    async deleteImgPet(req, res) {
+        const { petId, imgId } = req.params;
+    
+        if (!petId) return res.status(400).json({ message: "Pet não encontrado!" });
+        if (!imgId) return res.status(400).json({ message: "Imagem não encontrada!" });
+    
+        try {
+            const pet = await Pet.findById(petId);
+            if (!pet) {
+                return res.status(404).json({ message: "Pet não encontrado!" });
+            }
+    
+            // Removendo a imagem do array imgAnimal do pet
+            await Pet.findByIdAndUpdate(petId, {
+                $pull: { imgAnimal: { imgId: imgId } } // Remove a imagem com o imgId correspondente
+            });
+    
+            // Opcional: Remover a imagem do banco de dados, caso queira deletar também do ImgSchema
+            const img = await Img.findById(imgId);
+            if (img) {
+                await Img.findByIdAndDelete(imgId);
+            }
+    
+            res.status(200).json({ message: "Imagem removida com sucesso!" });
+    
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Erro interno no servidor!" });
+        }
+    }
+    
+    
 }
 
 module.exports= {petsController};

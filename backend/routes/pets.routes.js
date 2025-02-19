@@ -17,6 +17,8 @@ petsRoutes.get('/:id', new petsController().getPetsById);
 petsRoutes.post('/addImg/:petId', new petsController().addImgPetInPets);
 petsRoutes.get('/getImgId/:imgId', new imgController().getImgById);
 petsRoutes.get('/aLLimg', new imgController().getImgs)
+petsRoutes.delete('/deleteImgPet/:petId/:imgId', new petsController().deleteImgPet);
+petsRoutes.delete('/deleteImg/:id', new imgController().deleteImgs);
 petsRoutes.post('/img', multer(multerConfig).single('file'),async (req,res)=>{
     const{originalname: name, size, key, location: url=""}= req.file;
 
