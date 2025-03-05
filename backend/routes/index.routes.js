@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.use('/user', userRoutes);
 router.use('/pet', petsRoutes);
+// rl/pet/
 //router.use('/chat', chatRoutes);
 
 module.exports = router;

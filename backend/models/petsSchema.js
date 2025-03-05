@@ -9,7 +9,8 @@ const PetsSchema = new mongoose.Schema({
     weight:{type: String,require: true},
     specie:{type:String, require:true},
     location:{type: String},
-    imgAnimal:{type:[{}], default:[]}
+    userId:{type:mongoose.Schema.Types.ObjectId, ref:"User",require:true},
+    imgAnimal:{type: [String]}
 })
 
 module.exports = mongoose.model('Pet', PetsSchema);
