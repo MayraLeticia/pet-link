@@ -1,6 +1,8 @@
-// const express = require('express');
-// const {chatController} = require('../controller/chatController');
-// const chatRoutes = express.Router();
+mayra-sp1
+/*const express = require('express');
+const {chatController} = require('../controller/chatController');
+const chatRoutes = express.Router();
+
 
 // router.get('/conversations/:userId', chatController.getConversations);
 // chatRoutes.post('/send', new chatController().sendMessage );
@@ -13,5 +15,6 @@
 // //         res.status(500).send("Erro ao buscar usuários.");
 // //     }
 // // });
+
 
 // module.exports = chatRoutes;
