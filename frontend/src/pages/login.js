@@ -30,7 +30,7 @@ const Login = () => {
       const response = await api.post('api/user/login', { email, password });
       localStorage.setItem('token', response.data.token); // Salvar o token no localStorage
       alert('Login realizado com sucesso!');
-      router.push('/profile'); // Redirecionar para a página de perfil
+      router.push('/feed'); // Redirecionar para a página de perfil
       // console.log(response.data); // Ver detalhes da resposta
     } catch (error) {
       alert(error.response?.data || "Erro ao fazer login"); // Exibir erro retornado pelo backend

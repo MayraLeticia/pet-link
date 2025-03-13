@@ -12,8 +12,6 @@ const Profile = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    console.log("Token recuperado:", token);
-    
     if (!token) {
       router.push('/login');
       return;
@@ -21,37 +19,17 @@ const Profile = () => {
 
     const fetchUserData = async () => {
       try {
-        const userId = JSON.parse(atob(token.split(".")[1])).sub;
-
-        // Enviar o token no cabeçalho Authorization
-        const userResponse = await api.get(`/api/user/${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`  // Cabeçalho com token
-          }
-        });
-
+        const userId = JSON.parse(atob(token.split("."))[1]).sub;
+        const userResponse = await api.get(`/user/getUserId/${userId}`);
         setUser(userResponse.data);
         
-        if (userResponse.data.yourAnimal && userResponse.data.yourAnimal.length > 0) {
-          console.log("Dados de yourAnimal:", userResponse.data.yourAnimal);  // Verificando dados do usuário e pets
-
+        if (userResponse.data.yourAnimal) {
           const petResponses = await Promise.all(
-            userResponse.data.yourAnimal.map((pet) => {
-              // Verificando se o petId existe
-              console.log("Pet ID:", pet.petId);
-              if (pet.petId) {
-                return api.get(`/api/pet/${pet.petId}`, {
-                  headers: {
-                    'Authorization': `Bearer ${token}`  // Passando o token também para pets
-                  }
-                });
-              }
-              return null; // Se não houver petId, retorna null
-            })
+            userResponse.data.yourAnimal.map((pet) =>
+              api.get(`/pet/${pet.petId}`)
+            )
           );
-
-          // Filtrando pets com petId válido
-          setPets(petResponses.filter((res) => res !== null).map((res) => res.data));
+          setPets(petResponses.map((res) => res.data));
         }
       } catch (error) {
         console.error("Erro ao carregar dados do usuário:", error);
