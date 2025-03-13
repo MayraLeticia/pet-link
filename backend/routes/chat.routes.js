@@ -15,6 +15,5 @@ const chatRoutes = express.Router();
 // //     }
 // // });
 
-
-// module.exports = chatRoutes;
+module.exports = chatRoutes;
 */
