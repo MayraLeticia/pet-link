@@ -1,7 +1,7 @@
 const Card = ({ profilePhoto, name, location, onClick }) => {
 
     return (
-        <div id='card' className="w-60 h-60 rounded-lg bg-custom-gradient flex flex-col cursor-pointer" onClick={onClick}>
+        <div id='card' className="w-56 h-56 rounded-lg bg-custom-gradient flex flex-col cursor-pointer" onClick={onClick}>
             <div className="w-full h-3/4">
             
                 <img
@@ -28,7 +28,7 @@ const Card = ({ profilePhoto, name, location, onClick }) => {
                     {location}
                 </p>
                     
-                <div className='w-7 h-7 flex items-center justify-center rounded-full bg-slate-700 bg-opacity-60 relative left-48 -top-7'>
+                <div className='w-7 h-7 flex items-center justify-center rounded-full bg-slate-700 bg-opacity-60 relative left-44 -top-7'>
                     <img src="icons/chat-bubbles-with-ellipsis.png" className="w-[19px] h-[19px] object-cover" />
                 </div>
 
