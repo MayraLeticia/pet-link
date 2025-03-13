@@ -30,9 +30,9 @@ const Register = () => {
     }
 
     try {
-      const response = await api.post('api/user/register', { username, email, password });
+      const response = await api.post('api/user/', { username, email, password });
       alert('Usuário registrado com sucesso!');
-      router.push('/profile'); // Redirecionar para a página de perfil
+      router.push('/feed'); // Redirecionar para a página de perfil
       console.log(response.data); // Mostrar resposta no console para depuração
     } catch (error) {
       if (error.response) {
