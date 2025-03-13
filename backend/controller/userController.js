@@ -19,40 +19,46 @@ class userController{
             
             await newUser.save();
 
-            res.status(201).send('Usuário registrado com suceso!');
+            res.status(201).json({
+                _id: newUser._id,
+                username: newUser.username,
+                email: newUser.email
+            });
+            
 
         } catch (error) {
             console.log(error);
             res.status(500).send('Erro ao registrar o usuário');
         }
     }
-    async loginUser(req,res){
-        try {
-            const{email, password}= req.body;
-            const user = await User.findOne({email})
-            if (!user) return res.status(404).send('Usuário não encontrado!');
+        async loginUser(req,res){
+            try {
+                const{email, password}= req.body;
+                const user = await User.findOne({email}).populate("yourAnimal");
+                if (!user) return res.status(404).send('Usuário não encontrado!');
 
-            const isMatch = await bcrypt.compare(password, user.password);
-            if(!isMatch)return res.status(401).send('Senha incorreta');
-            
-            const token = sign({},'789237109234sfdadf',{
-                subject: user.id,
-                expiresIn:"1d"
-            } )
+                const isMatch = await bcrypt.compare(password, user.password);
+                if(!isMatch)return res.status(401).send('Senha incorreta');
+                
+                const token = sign({},'789237109234sfdadf',{
+                    subject: user.id,
+                    expiresIn:"1d"
+                } )
 
-            res.status(200).json({
-                autehenticade: true,
-                token,
-                username: user.username,
-                email: user.email,
-                id: user.id
-            })
-        } catch (error) {
-            console.log(error);
-            res.status(500).send('Erro ao fazer login');
-            
+                res.status(200).json({
+                    autehenticade: true,
+                    token,
+                    username: user.username,
+                    email: user.email,
+                    id: user.id,
+                    pets:user.yourAnimal
+                })
+            } catch (error) {
+                console.log(error);
+                res.status(500).send('Erro ao fazer login');
+                
+            }
         }
-    }
 
     async updateUser(req,res){
         try {
@@ -92,34 +98,12 @@ class userController{
         }
     }
 
-    async addPetInUserPorfile(req,res){
-        const {userId}= req.params
-        const {petId}= req.body
-
-        if(!userId)return res.status(400).json({message:'Usuário não encontrado!'});
-        if(!petId) return res.status(400).json({message:'Parametros necessarios não encontrados'})
-        
-        try {
-            const userSelected = await User.findById(userId)
-            const newPet = {petId}
-            
-            await User.findByIdAndUpdate(userId,{
-                yourAnimal:[...userSelected.yourAnimal, newPet]
-            })
-            res.status(200).json({message: 'Pet adicionado com sucesso'})
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({message:'Internal server error!'});
-        }
-
-        
-    }
 
     async getUserByid(req,res){
-        const{userId} = req.params
+        const{id} = req.params
         try {
-            const userSelected = await User.findById(userId)
-            return res.status(200).json(userSelected)
+            const userSelected = await User.findById(id)
+            return res.status(200).json(userSelected);
         } catch (error) {
             console.error(error);
             return res.status(404).json({message:'Usuario não encontrado!'})

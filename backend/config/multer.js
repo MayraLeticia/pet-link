@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const multerS3 = require('multer-s3');
 const { S3Client } = require('@aws-sdk/client-s3');
 
-// Criar o cliente S3 com as credenciais e região da AWS vindas do arquivo .env
+
 const s3 = new S3Client({
     region: process.env.AWS_DEFAULT_REGION,
     credentials: {
