@@ -774,7 +774,7 @@ export default function PetProfile() {
                     <div className="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-6">
                         <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[346px] gap-4">
                             {/* Formulário */}
-                            <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[272px] w-[346px] relative gap-2.5 p-4 rounded-lg bg-[url('frame-176.png')] bg-cover bg-no-repeat bg-center">
+                            <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[272px] w-[346px] relative gap-2.5 p-4 rounded-lg bg-cover bg-no-repeat bg-center">
                                 <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#383434]">
                                 Foto de perfil
                                 </p>
