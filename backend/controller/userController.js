@@ -99,16 +99,20 @@ class userController{
     }
 
 
-    async getUserByid(req,res){
-        const{id} = req.params
+    async getUserByid(req, res) {
+        const { id } = req.params;
         try {
-            const userSelected = await User.findById(id)
+            const userSelected = await User.findById(id).select("-password");
+            if (!userSelected) {
+                return res.status(404).json({ message: "Usuário não encontrado!" });
+            }
             return res.status(200).json(userSelected);
         } catch (error) {
-            console.error(error);
-            return res.status(404).json({message:'Usuario não encontrado!'})
+            console.error("Erro ao buscar usuário:", error);
+            return res.status(500).json({ message: "Erro ao buscar usuário" });
         }
     }
+    
 
     
 
