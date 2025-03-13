@@ -19,7 +19,12 @@ class userController{
             
             await newUser.save();
 
-            res.status(201).send(newUser, -password);
+            res.status(201).json({
+                _id: newUser._id,
+                username: newUser.username,
+                email: newUser.email
+            });
+            
 
         } catch (error) {
             console.log(error);
