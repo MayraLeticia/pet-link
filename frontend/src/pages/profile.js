@@ -33,26 +33,25 @@ const Profile = () => {
         setUser(userResponse.data);
         
         if (userResponse.data.yourAnimal && userResponse.data.yourAnimal.length > 0) {
-          console.log("Dados de yourAnimal:", userResponse.data.yourAnimal);  // Verificando dados do usuário e pets
-
+          console.log("Dados de yourAnimal:", userResponse.data.yourAnimal);
+        
           const petResponses = await Promise.all(
-            userResponse.data.yourAnimal.map((pet) => {
-              // Verificando se o petId existe
-              console.log("Pet ID:", pet.petId);
-              if (pet.petId) {
-                return api.get(`/api/pet/${pet.petId}`, {
+            userResponse.data.yourAnimal.map(async (pet) => {
+              console.log("Pet ID:", pet);  // Verifique aqui qual valor está sendo impresso
+              if (pet) {
+                return api.get(`/api/pet/${pet}`, {
                   headers: {
-                    'Authorization': `Bearer ${token}`  // Passando o token também para pets
+                    'Authorization': `Bearer ${token}`,
                   }
                 });
               }
-              return null; // Se não houver petId, retorna null
+              return null; // Se não houver pet.id, retorna null
             })
           );
-
-          // Filtrando pets com petId válido
+        
           setPets(petResponses.filter((res) => res !== null).map((res) => res.data));
         }
+        
       } catch (error) {
         console.error("Erro ao carregar dados do usuário:", error);
         alert("Erro ao carregar dados");

@@ -1,5 +1,6 @@
 const Pet = require('../models/petsSchema');
 const User = require('../models/userSchema');
+const mongoose = require('mongoose');
 const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 
@@ -94,18 +95,30 @@ class petsController{
         }
     }
 
-    async getPetsById(req,res){
-        const petsId = req.params
+    async getPetsById(req, res) {
+        const petId = req.params.id;
+    
+    
         try {
-            const petsSelected =  await Pet.findById(petsId)
-            return res.status(200).json(petsSelected)
-
             
+            if (!mongoose.Types.ObjectId.isValid(petId)) {
+                return res.status(400).json({ message: "ID de pet inválido." });
+            }
+    
+            const pet = await Pet.findById(petId); 
+    
+            if (!pet) {
+                return res.status(404).json({ message: "Pet não encontrado." });
+            }
+    
+            return res.status(200).json(pet); 
         } catch (error) {
-            console.error(error)
-            return res.status(404).json({messafe: 'Pet não encontrado'})
+            console.error("Erro ao buscar pet:", error);
+            return res.status(500).json({ message: "Erro interno do servidor." });
         }
     }
+    
+    
 
     async deleteImage(req, res) {
         try {
