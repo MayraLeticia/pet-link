@@ -1,12 +1,13 @@
 "use client";  // Adicione esta linha no topo do arquivo
 
 import { useState } from "react";
+import { Input } from "../../components";
 
-export default function PetProfile() {
+const PetRegister = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
+    <div className="flex flex-col items-center justify-center">
       {/* Botão para abrir o modal */}
       <button
         onClick={() => setIsOpen(true)}
@@ -18,7 +19,7 @@ export default function PetProfile() {
       {/* Modal */}
       {isOpen && (
         <div 
-            className="flex flex-col justify-center items-center w-[1364px] h-[840px] gap-2.5 px-[52px] py-10 rounded-[20px] bg-white"
+            className="flex flex-col justify-center items-center w-4/5 h-4/5 gap-2.5 px-12 py-10 rounded-3xl bg-white"
             style={{ boxShadow: "4px 4px 10px 0 rgba(0,0,0,0.25)" }}
         >
             <div className="flex flex-col justify-center items-center self-stretch flex-grow gap-3">
@@ -28,26 +29,10 @@ export default function PetProfile() {
                     Cadastro de pet
                     </p>
 
-{/* svg */}
-                    <svg
-                        width={24}
-                        height={24}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="flex-grow-0 flex-shrink-0 w-6 h-6 relative"
-                        preserveAspectRatio="none"
-                    >
-                        <path
-                        d="M13.4099 11.9999L19.7099 5.70994C19.8982 5.52164 20.004 5.26624 20.004 4.99994C20.004 4.73364 19.8982 4.47825 19.7099 4.28994C19.5216 4.10164 19.2662 3.99585 18.9999 3.99585C18.7336 3.99585 18.4782 4.10164 18.2899 4.28994L11.9999 10.5899L5.70994 4.28994C5.52164 4.10164 5.26624 3.99585 4.99994 3.99585C4.73364 3.99585 4.47824 4.10164 4.28994 4.28994C4.10164 4.47825 3.99585 4.73364 3.99585 4.99994C3.99585 5.26624 4.10164 5.52164 4.28994 5.70994L10.5899 11.9999L4.28994 18.2899C4.19621 18.3829 4.12182 18.4935 4.07105 18.6154C4.02028 18.7372 3.99414 18.8679 3.99414 18.9999C3.99414 19.132 4.02028 19.2627 4.07105 19.3845C4.12182 19.5064 4.19621 19.617 4.28994 19.7099C4.3829 19.8037 4.4935 19.8781 4.61536 19.9288C4.73722 19.9796 4.86793 20.0057 4.99994 20.0057C5.13195 20.0057 5.26266 19.9796 5.38452 19.9288C5.50638 19.8781 5.61698 19.8037 5.70994 19.7099L11.9999 13.4099L18.2899 19.7099C18.3829 19.8037 18.4935 19.8781 18.6154 19.9288C18.7372 19.9796 18.8679 20.0057 18.9999 20.0057C19.132 20.0057 19.2627 19.9796 19.3845 19.9288C19.5064 19.8781 19.617 19.8037 19.7099 19.7099C19.8037 19.617 19.8781 19.5064 19.9288 19.3845C19.9796 19.2627 20.0057 19.132 20.0057 18.9999C20.0057 18.8679 19.9796 18.7372 19.9288 18.6154C19.8781 18.4935 19.8037 18.3829 19.7099 18.2899L13.4099 11.9999Z"
-                        fill="black"
-                        />
-                    </svg>
-
-
                 </div>
             </div>
-            <div className="flex justify-start items-center self-stretch flex-grow relative gap-[60px]">
+            
+            <div className="flex justify-start items-center self-stretch flex-grow relative gap-14">
 
 {/* svg */}
                 <svg
@@ -56,7 +41,7 @@ export default function PetProfile() {
                     viewBox="0 0 500 500"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="flex-grow-0 flex-shrink-0 w-[500px] h-[500px] relative"
+                    className="flex-grow-0 flex-shrink-0 w-96 h-96 relative"
                     preserveAspectRatio="none"
                 >
                     <path
@@ -769,26 +754,21 @@ export default function PetProfile() {
                     />
                 </svg>
 
-
-                <div className="flex flex-col justify-start items-start flex-grow gap-4">
-                    <div className="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 gap-6">
-                        <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[346px] gap-4">
-                            {/* Formulário */}
-                            <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[272px] w-[346px] relative gap-2.5 p-4 rounded-lg bg-cover bg-no-repeat bg-center">
-                                <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#383434]">
+                <div className="flex flex-col justify-start items-start flex-grow gap-4 w-full">
+                    {/* Formulário */}
+                    <div className="flex justify-start items-start self-stretch gap-6 w-full">
+                        <div className="flex flex-col justify-start items-start gap-4 w-full">
+                            
+                            <div className="flex flex-col justify-start items-start  h-80 w-80 relative gap-2.5 p-4 rounded-lg bg-cover bg-no-repeat bg-center">
+                                <p className="text-base font-light text-left text-[#383434]">
                                 Foto de perfil
                                 </p>
                             </div>
-                            <div className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-14 gap-4">
-                                <div className="flex justify-start items-start flex-grow h-14 relative gap-3 p-4 rounded-[15px] bg-[#e8f0fe]">
-                                <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#383434]">
-                                    Nome
-                                </p>
-                                </div>
-                                <div className="flex justify-start items-start flex-grow h-14 relative gap-3 p-4 rounded-[15px] bg-[#e8f0fe]">
-                                <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#383434]">
-                                    Idade
-                                </p>
+                            <div className="flex justify-start items-center gap-4 w-full">
+                                
+                                <Input placeholder="Nome" width="w-full" onChange={""}/>
+                                <Input placeholder="Idade" width="w-full" onChange={""}/>
+                                
                                 </div>
                             </div>
                         </div>
@@ -829,8 +809,10 @@ export default function PetProfile() {
 
             </div>
 
-        </div>
+        
       )}
     </div>
   );
-}
+};
+
+export default PetRegister;

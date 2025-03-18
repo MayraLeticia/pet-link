@@ -29,7 +29,7 @@ const Card = ({ profilePhoto, name, location, onClick }) => {
                 </p>
                     
                 <div className='w-7 h-7 flex items-center justify-center rounded-full bg-slate-700 bg-opacity-60 relative left-44 -top-7'>
-                    <img src="icons/chat-bubbles-with-ellipsis.png" className="w-[19px] h-[19px] object-cover" />
+                    <a href="/chat"><img src="icons/chat-bubbles-with-ellipsis.png" className="w-[19px] h-[19px] object-cover" /></a>
                 </div>
 
             </div>
