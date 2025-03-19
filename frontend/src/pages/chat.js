@@ -1,23 +1,12 @@
-// import React, { useState } from 'react';
-// import { ChatList, ChatMessages } from '../components';
+import React, { useState } from 'react';
 
-// const Chat = () => {
-//     const [selectedUser, setSelectedUser] = useState(null); // Usuário selecionado para conversar
+const Chat = () => {
+    
+    return (
+        <div className="w-screen">
+            
+        </div>
+    );
+};
 
-//     return (
-//         <div className="chat-screen">
-//             <div className="chat-list">
-//                 <ChatList onSelectUser={setSelectedUser} />
-//             </div>
-//             <div className="chat-messages">
-//                 {selectedUser ? (
-//                     <ChatMessages selectedUser={selectedUser} />
-//                 ) : (
-//                     <p>Selecione um contato para iniciar uma conversa</p>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Chat;
+export default Chat;
