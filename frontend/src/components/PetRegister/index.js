@@ -71,7 +71,7 @@ const PetRegister = () => {
             {/* Modal */}
             {isOpen && (
                 <div
-                    className="flex flex-col justify-center items-center w-auto h-4/5 gap-2.5 px-12 py-10 rounded-3xl bg-white"
+                    className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-auto h-4/5 gap-2.5 px-12 py-10 rounded-3xl bg-white"
                     style={{ boxShadow: "4px 4px 10px 0 rgba(0,0,0,0.25)" }}
                 >
 

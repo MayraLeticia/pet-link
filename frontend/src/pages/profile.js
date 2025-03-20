@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import api from '../services/api';
-import { EditableInput, Button } from "../components";
+import { PetRegister } from "../components";
 
 const Profile = () => {
   const router = useRouter();
@@ -83,14 +83,18 @@ const Profile = () => {
             <p className="text-lg">Bem-vindo, <span className="text-[#ffa2df]">{user.username}</span>!</p>
             <div className="mt-4">
               <h3 className="text-xl font-semibold">Seus Pets</h3>
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                {pets.length > 0 ? pets.map((pet) => (
-                  <div key={pet._id} className="p-4 bg-white rounded-lg shadow-md">
-                    <img src={pet.imgAnimal?.[0]?.url || "placeholder.jpg"} alt={pet.name} className="w-full h-40 object-cover rounded-md" />
-                    <h4 className="text-lg font-medium mt-2">{pet.name}</h4>
-                    <p className="text-sm text-gray-600">{pet.specie} - {pet.race}</p>
-                  </div>
-                )) : <p className="text-gray-500">Nenhum pet cadastrado.</p>}
+              <div className="flex flex-col gap-2 justify-start items-start">
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  {pets.length > 0 ? pets.map((pet) => (
+                    <div key={pet._id} className="p-4 bg-white rounded-lg shadow-md">
+                      <img src={pet.imgAnimal?.[0]?.url || "placeholder.jpg"} alt={pet.name} className="w-full h-40 object-cover rounded-md" />
+                      <h4 className="text-lg font-medium mt-2">{pet.name}</h4>
+                      <p className="text-sm text-gray-600">{pet.specie} - {pet.race}</p>
+                    </div>
+                  )) : <p className="text-gray-500">Nenhum pet cadastrado.</p>}
+                </div>
+                
+                <PetRegister/>
               </div>
             </div>
           </div>
