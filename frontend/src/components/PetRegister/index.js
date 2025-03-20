@@ -9,12 +9,12 @@ const PetRegister = () => {
 
     const [formData, setFormData] = useState({
         name: "",
-        race: "",
         age: "",
-        description: "",
+        size: "",
         weight: "",
-        location: "",
         specie: "",
+        race: "",
+        gender: "",
         file: null,
     });
     
@@ -38,12 +38,12 @@ const PetRegister = () => {
 
         const formDataToSend = new FormData();
         formDataToSend.append("name", formData.name);
-        formDataToSend.append("race", formData.race);
         formDataToSend.append("age", formData.age);
-        formDataToSend.append("description", formData.description);
-        formDataToSend.append("weight", formData.weight);
-        formDataToSend.append("location", formData.location);
+        formDataToSend.append("size", formData.size);
         formDataToSend.append("specie", formData.specie);
+        formDataToSend.append("race", formData.race);
+        formDataToSend.append("gender", formData.gender);
+        formDataToSend.append("weight", formData.weight);
         formDataToSend.append("userId", userId); // Adiciona o usuário logado
         if (formData.file) {
         formDataToSend.append("file", formData.file); // Adiciona a imagem
