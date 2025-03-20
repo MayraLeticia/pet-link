@@ -190,7 +190,7 @@ const Login = () => {
             <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
                 <Button
                   icon='/icons/Google.png'
-                  onClick={() => signIn('google')}
+                  onClick={() => signIn("google")}
                   width="w-[75px]"
                   height="h-[75px]"
                   color="bg-[#e8f0fe]"

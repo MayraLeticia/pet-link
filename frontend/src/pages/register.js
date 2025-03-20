@@ -59,7 +59,7 @@ const Register = () => {
             </p>
         </div>
         <div id="init" className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-12">
-            <img src='/image.svg' alt="bichinhos" className="w-96 h-96"/>
+            <img src='/image.svg' alt=" bichinhos" className="w-96 h-96"/>
             <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-6">
                 <p className="self-stretch flex-grow-0 flex-shrink-0 text-3xl font-bold text-center text-[#212334]">
                     O seu bichinho tambêm merece amor.
