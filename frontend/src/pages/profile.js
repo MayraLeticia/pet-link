@@ -62,42 +62,138 @@ const Profile = () => {
     fetchUserData();
   }, [router]);
 
-  return (
-    <div className="w-[1728px] h-[1117px] flex">
-      <aside className="w-[373px] h-full bg-gradient-to-b from-blue-400 via-pink-300 to-white p-6">
-        <h1 className="text-2xl font-semibold text-[#4d87fc]">Pet Link</h1>
-        <nav className="mt-10">
-          <ul className="space-y-4">
-            <li className="text-lg text-black">List</li>
-            <li className="text-lg text-black">Your Match</li>
-            <li className="text-lg text-black">Map</li>
-            <li className="text-lg text-black">Message</li>
-          </ul>
-        </nav>
-      </aside>
+  const [selectedPet, setSelectedPet] = useState(null);
+  
 
-      <main className="flex-grow p-10">
-        <h2 className="text-2xl font-medium text-[#4d87fc]">Seu Perfil</h2>
-        {user ? (
-          <div className="mt-6">
-            <p className="text-lg">Bem-vindo, <span className="text-[#ffa2df]">{user.username}</span>!</p>
-            <div className="mt-4">
-              <h3 className="text-xl font-semibold">Seus Pets</h3>
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                {pets.length > 0 ? pets.map((pet) => (
-                  <div key={pet._id} className="p-4 bg-white rounded-lg shadow-md">
-                    <img src={pet.imgAnimal?.[0]?.url || "placeholder.jpg"} alt={pet.name} className="w-full h-40 object-cover rounded-md" />
-                    <h4 className="text-lg font-medium mt-2">{pet.name}</h4>
-                    <p className="text-sm text-gray-600">{pet.specie} - {pet.race}</p>
-                  </div>
-                )) : <p className="text-gray-500">Nenhum pet cadastrado.</p>}
+  return (
+    <div className="w-[1266px] min-h-[1069px] relative overflow-hidden mx-auto my-10">
+      <div className="flex flex-col justify-start items-start gap-12">
+        {/* Cabeçalho */}
+        <div className="w-44 h-[65px] relative">
+          <p className="text-2xl font-medium text-left text-[#4d87fc]">Your profile</p>
+          <p className="w-44 h-[23px] text-sm font-medium text-left mt-2">
+            <span className="text-black">Welcome, </span>
+            <span className="text-[#ffa2df]">{user?.username || "user"}</span>
+            <span className="text-black">!</span>
+          </p>
+        </div>
+
+        {/* Dados do Tutor + Dados do Pet */}
+        <div className="flex justify-start items-start gap-7 w-full">
+          {/* Dados do Tutor */}
+          <div className="flex flex-col justify-start items-start flex-grow gap-5">
+            <p className="text-xl font-medium text-black">Dados do Tutor</p>
+            <div className="flex flex-col gap-3">
+              <div className="w-[500px] h-14 p-4 rounded-[15px] bg-[#e8f0fe] border border-[#c7cedd]">
+                <p className="text-base font-light text-[#383434]">
+                  Nome: {user?.username || "Carregando..."}
+                </p>
+              </div>
+              <div className="h-14 p-4 rounded-[15px] bg-[#e8f0fe]">
+                <p className="text-base font-light text-[#383434]">
+                  E-mail: {user?.email || "Carregando..."}
+                </p>
+              </div>
+              <div className="h-14 p-4 rounded-[15px] bg-[#e8f0fe]">
+                <p className="text-base font-light text-[#383434]">
+                  Repetir e-mail: {user?.email || "Carregando..."}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-4">
+                <div className="w-[241px] h-14 px-6 rounded-[15px] bg-[#fee8fb] flex items-center justify-center cursor-pointer">
+                  <p className="text-base font-medium text-[#383434]">Mudar senha</p>
+                </div>
+                <div className="w-[241px] h-14 px-6 rounded-[15px] bg-[#fee8fb] flex items-center justify-center cursor-pointer">
+                <p className="text-base font-medium text-[#383434]">{selectedPet ? `Excluir ${selectedPet.name}` : "Excluir pet"}</p>
+
+                </div>
+              </div>
+              <div className="h-14 p-4 rounded-[15px] bg-[#f2d3d3] border border-[#ff1010] border-dashed flex items-center justify-center cursor-pointer">
+                <p className="text-base font-semibold text-[#f00]">Excluir conta</p>
               </div>
             </div>
           </div>
-        ) : (
-          <p className="text-gray-500">Carregando...</p>
+
+          {/* Dados do Pet (com ou sem seleção) */}
+          <div className="flex flex-col justify-start items-start gap-6">
+            <p className="w-[760px] text-xl font-medium text-left text-black">
+              Dados do {selectedPet ? selectedPet.name : "<pet selecionado>"}
+            </p>
+            <div className="flex w-[760px] gap-6">
+              <div className="flex flex-col gap-3">
+                <div className="flex gap-4">
+                  <div className="w-[149px] h-14 p-4 rounded-[15px] bg-[#e8f0fe]">
+                    <p className="text-base font-light text-[#383434]">
+                      {selectedPet?.name || "Nome"}
+                    </p>
+                  </div>
+                  <div className="w-[149px] h-14 p-4 rounded-[15px] bg-[#e8f0fe]">
+                    <p className="text-base font-light text-[#383434]">
+                      {selectedPet?.age || "Idade"}
+                    </p>
+                  </div>
+                </div>
+                <div className="h-14 w-[315px] p-4 rounded-[15px] bg-[#e8f0fe]">
+                  <p className="text-base font-light text-[#383434]">
+                    {selectedPet?.species || "Espécie"}
+                  </p>
+                </div>
+                <div className="h-14 p-4 rounded-[15px] bg-[#e8f0fe]">
+                  <p className="text-base font-light text-[#383434]">
+                    {selectedPet?.height || "Porte"}
+                  </p>
+                </div>
+                <div className="h-14 p-4 rounded-[15px] bg-[#e8f0fe]">
+                  <p className="text-base font-light text-[#383434]">
+                    {selectedPet?.breed || "Raça"}
+                  </p>
+                </div>
+                <div className="h-14 p-4 rounded-[15px] bg-[#e8f0fe]">
+                  <p className="text-base font-light text-[#383434]">
+                    {selectedPet?.weight ? `${selectedPet.weight} kg` : "Peso"}
+                  </p>
+                </div>
+              </div>
+              <div className="h-[328px] w-[400px] p-4 rounded-[15px] bg-[#e8f0fe] overflow-y-auto">
+                <p className="text-base font-light text-[#383434]">
+                  {selectedPet?.description || "Descrição"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Galeria */}
+        {pets.length > 0 && (
+          <div className="flex flex-col gap-6">
+            <p className="text-xl font-medium text-black">Galeria</p>
+            <div className="flex gap-[55px] w-[1265px] flex-wrap">
+              {pets.map((pet, index) => (
+                <div
+                  key={index}
+                  onClick={() => setSelectedPet(pet)}
+                  className={`w-[275px] h-[297px] rounded-[15px] bg-[#e8f0fe] overflow-hidden cursor-pointer border-2 ${
+                    selectedPet?._id === pet._id
+                      ? "border-[#4d87fc]"
+                      : "border-transparent"
+                  }`}
+                >
+                  <img
+                    src={pet.imgAnimal?.[0]?.url || "/placeholder.jpg"}
+                    alt={pet.name}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
+              <div className="w-[275px] h-[297px] rounded-[15px] bg-[#e8f0fe]/30 border-2 border-[#646464] border-dashed flex items-center justify-center relative">
+                <p className="text-3xl font-light text-black">+</p>
+              </div>
+            </div>
+          </div>
         )}
-      </main>
+      </div>
     </div>
   );
 };
