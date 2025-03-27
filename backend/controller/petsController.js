@@ -87,11 +87,18 @@ class petsController{
 
     async getPets(req,res){
         try {
-            const pets = await Pet.find({});
+            const { specie, race, age } = req.query;
+
+            const filter = {};
+            if (specie) filter.specie = specie;
+            if (race) filter.race = race;
+            if (age) filter.age = parseInt(age);
+
+            const pets = await Pet.find(filter);
             res.status(200).json(pets)
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao obter os usuários')
+            res.status(500).send('Erro ao obter os pets');
         }
     }
 
