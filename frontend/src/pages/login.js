@@ -1,9 +1,11 @@
 
 "use client";
 import React, { useState } from 'react';
+
 import { useRouter } from 'next/router';
 import { loginUser } from '../services/api';
 import { Button, Checkbox, Input } from "../components";
+import { signIn, useSession } from 'next-auth/react';
 
 const Login = () => {
 
@@ -153,7 +155,7 @@ const Login = () => {
         <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
           <Button
             icon='/icons/Google.png'
-            onClick={() => signIn('google')}
+            onClick={() => signIn("google")}
             width="w-[75px]"
             height="h-[75px]"
             color="bg-[#e8f0fe]"
