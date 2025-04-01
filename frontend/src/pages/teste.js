@@ -1,18 +1,14 @@
+
 //usem como quiserem
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { PetRegister } from "../components";
+import { signIn } from "next-auth/react";
 
-const Teste = () => {
-
-    
-    return (
-        <div id="profile" className="w-screen h-screen flex flex-row justify-center items-center">
-            <PetRegister />
-        </div>
-    );
+export default function Login() {
+  return (
+    <div>
+      <h1>Login</h1>
+      <button onClick={() => signIn("google")}>Sign in with Google</button>
+    </div>
+  );
 }
-
-
-export default Teste;
