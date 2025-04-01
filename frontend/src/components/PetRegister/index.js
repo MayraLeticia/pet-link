@@ -15,7 +15,7 @@ const PetRegister = () => {
         specie: "",
         race: "",
         gender: "",
-        file: null,
+        file: null
     });
     
     // Função para atualizar os campos de texto

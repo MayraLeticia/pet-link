@@ -4,13 +4,13 @@ import axios from 'axios';
 
 // Configuração do Axios
 const api = axios.create({
-  baseURL: 'http://localhost:5000/', // URL do backend
+  baseURL: 'http://localhost:5000/api', // URL do backend
 });
 
 // Função para login do usuário
 export const loginUser = async (email, password) => {
   try {
-    const response = await api.post("api/user/login", { email, password });
+    const response = await api.post("/user/login", { email, password });
 
     // Salvar token e ID do usuário no localStorage
     localStorage.setItem("token", response.data.token);
