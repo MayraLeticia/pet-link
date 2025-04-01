@@ -8,6 +8,8 @@ const PetsSchema = new mongoose.Schema({
     description:{type: String, require: false},
     weight:{type: String,require: true},
     specie:{type:String, require:true},
+    gender:{type:String,require:true},
+    size:{type:String,require:true},
     location:{type: String},
     userId:{type:mongoose.Schema.Types.ObjectId, ref:"User",require:true},
     imgAnimal:{type: [String]}

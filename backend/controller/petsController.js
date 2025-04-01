@@ -19,8 +19,8 @@ class petsController{
     async registerPets(req,res){
         
         try {
-            const {name, race, age, description,weight, location,specie, userId}= req.body;
-            if(!name || !race || !age || !description || !weight || !location || !specie)return res.status(400).send("Não foi prenchido corretamente todos os campos!");
+            const {name, race, age, description,weight, location, specie, size, gender, userId}= req.body;
+            if(!name || !age || !weight || !specie|| !size || !gender)return res.status(400).send("Não foi prenchido corretamente todos os campos!");
             
             const newPet = new Pet({
                 name, 
@@ -30,6 +30,8 @@ class petsController{
                 weight,
                 location, 
                 specie,
+                gender,
+                size,
                 imgAnimal: req.file.key,
                 userId
 

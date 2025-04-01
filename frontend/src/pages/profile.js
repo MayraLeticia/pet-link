@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import api from '../services/api';
-import { EditableInput, Button } from "../components";
+import { PetRegister } from "../components";
 
 const Profile = () => {
   const router = useRouter();
@@ -24,7 +24,7 @@ const Profile = () => {
         const userId = JSON.parse(atob(token.split(".")[1])).sub;
 
         // Enviar o token no cabeçalho Authorization
-        const userResponse = await api.get(`/api/user/${userId}`, {
+        const userResponse = await api.get(`/user/${userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`  // Cabeçalho com token
           }
@@ -39,7 +39,7 @@ const Profile = () => {
             userResponse.data.yourAnimal.map(async (pet) => {
               console.log("Pet ID:", pet);  // Verifique aqui qual valor está sendo impresso
               if (pet) {
-                return api.get(`/api/pet/${pet}`, {
+                return api.get(`/pet/${pet}`, {
                   headers: {
                     'Authorization': `Bearer ${token}`,
                   }
@@ -193,6 +193,7 @@ const Profile = () => {
             </div>
           </div>
         )}
+        <PetRegister/>
       </div>
     </div>
   );

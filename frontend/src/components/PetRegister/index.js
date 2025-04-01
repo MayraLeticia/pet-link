@@ -2,9 +2,61 @@
 
 import { useState } from "react";
 import { Input, Button } from "../../components";
+import { cadastrarPet } from "../../services/api";
 
 const PetRegister = () => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const [formData, setFormData] = useState({
+        name: "",
+        age: "",
+        size: "",
+        weight: "",
+        specie: "",
+        race: "",
+        gender: "",
+        file: null
+    });
+    
+    // Função para atualizar os campos de texto
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    // Função para atualizar a imagem do pet
+    const handleFileChange = (e) => {
+        setFormData({ ...formData, file: e.target.files[0] });
+    };
+
+    // Função para cadastrar um pet
+    const handleRegisterPet = async () => {
+        const userId = localStorage.getItem("userId"); // Obtém o ID do usuário logado
+        if (!userId) {
+            alert("Erro: Usuário não autenticado!");
+            return;
+        }
+
+        const formDataToSend = new FormData();
+        formDataToSend.append("name", formData.name);
+        formDataToSend.append("age", formData.age);
+        formDataToSend.append("size", formData.size);
+        formDataToSend.append("specie", formData.specie);
+        formDataToSend.append("race", formData.race);
+        formDataToSend.append("gender", formData.gender);
+        formDataToSend.append("weight", formData.weight);
+        formDataToSend.append("userId", userId); // Adiciona o usuário logado
+        if (formData.file) {
+        formDataToSend.append("file", formData.file); // Adiciona a imagem
+        }
+
+        try {
+        await cadastrarPet(formDataToSend);
+        alert("Pet cadastrado com sucesso!");
+        setIsOpen(false); // Fecha o modal após o cadastro
+        } catch (error) {
+        alert("Erro ao cadastrar pet. Verifique os dados e tente novamente.");
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center">
@@ -19,7 +71,7 @@ const PetRegister = () => {
             {/* Modal */}
             {isOpen && (
                 <div
-                    className="flex flex-col justify-center items-center w-auto h-4/5 gap-2.5 px-12 py-10 rounded-3xl bg-white"
+                    className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-auto h-4/5 gap-2.5 px-12 py-10 rounded-3xl bg-white"
                     style={{ boxShadow: "4px 4px 10px 0 rgba(0,0,0,0.25)" }}
                 >
 
@@ -36,11 +88,13 @@ const PetRegister = () => {
                                 color="bg-[#ffa2df]"
                                 border="border-[#fc7bcf]"
                                 className="hover:bg-[#fc7bcf]"
-                                onClick = {() => {
-                                    
-                                }}
+                                onClick={handleRegisterPet}
                             />
-                            <img src="icons/Cancel.png" className="w-4 h-4 object-cover" />
+
+                            <button onClick={() => setIsOpen(false)}>
+                                <img src="icons/Cancel.png" className="w-4 h-4 object-cover" />
+                            </button>
+                            
                         </div>
                     </div>
 
@@ -773,24 +827,22 @@ const PetRegister = () => {
                             <div className="flex flex-col justify-start items-start gap-4">
 
                                 <div className="flex flex-col justify-center items-center h-72 w-72 p-4 rounded-lg bg-[#e8f0fe]">
-                                    <p className="text-base font-light text-left text-[#383434]">
-                                        Foto de perfil
-                                    </p>
+                                    <Input type="file" accept="image/*" onChange={handleFileChange} />
                                 </div>
                                 <div className="flex justify-start items-center gap-2">
 
-                                    <Input placeholder="Nome" width="w-36" onChange={""} />
-                                    <Input placeholder="Idade" width="w-36" onChange={""} />
+                                    <Input type="text"placeholder="Nome" width="w-36" onChange={handleChange} />
+                                    <Input type="number"placeholder="Idade" width="w-36" onChange={handleChange} />
 
                                 </div>
 
                             </div>
                             <div className="flex flex-col justify-start items-start flex-grow gap-3">
-                                <Input placeholder="Porte" width="w-36" onChange={""} />
-                                <Input placeholder="Peso" width="w-36" onChange={""} />
-                                <Input placeholder="Especie" width="w-36" onChange={""} />
-                                <Input placeholder="Raça" width="w-36" onChange={""} />
-                                <Input placeholder="Sexo" width="w-36" onChange={""} />
+                                <Input type="text"placeholder="Porte" width="w-36" onChange={handleChange} />
+                                <Input type="number"placeholder="Peso" width="w-36" onChange={handleChange} />
+                                <Input type="text"placeholder="Especie" width="w-36" onChange={handleChange} />
+                                <Input type="text"placeholder="Raça" width="w-36" onChange={handleChange} />
+                                <Input type="text"placeholder="Sexo" width="w-36" onChange={handleChange} />
                             </div>
                         </div>
                     </div>
