@@ -31,9 +31,9 @@ const Login = () => {
       <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2">
         <div className="flex-grow-0 flex-shrink-0">
           <img
-                src="/Logo.png"
-                className="w-10 h-10 absolute left-[9.5px] top-[14.5px] object-cover"
-              />
+            src="/Logo.png"
+            className="w-10 h-10 absolute left-[9.5px] top-[14.5px] object-cover"
+          />
           <p className="absolute left-[77px] top-6 text-[32px] font-semibold text-left text-[#4d87fc]">
             Pet Link
           </p>

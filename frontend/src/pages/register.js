@@ -10,7 +10,7 @@ import Meta from "../../public/icons/Meta.png";
 import Image from "../../public/image.svg";
 
 const Register = () => {
-  
+
   const router = useRouter(); // Hook para navegação
 
   const [username, setUsername] = useState('');
@@ -22,7 +22,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(''); // Limpa os erros antes de tentar registrar
-    
+
     // Verificar se as senhas coincidem
     if (password !== confirmPassword) {
       setError('As senhas não coincidem.');
@@ -46,29 +46,29 @@ const Register = () => {
   };
 
   return (
-      
-    <div id="register" className="w-screen h-screen flex flex-row justify-center items-center"> 
+
+    <div id="register" className="w-screen h-screen flex flex-row justify-center items-center">
       <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2">
         <div className="flex-grow-0 flex-shrink-0">
-            {/* <img
-                src="design-sem-nome-(6)-1.png"
-                className="w-[67px] h-[67px] absolute left-[9.5px] top-[14.5px] object-cover"
-            /> */}
-            <p className="absolute left-[77px] top-6 text-[32px] font-semibold text-left text-[#4d87fc]">
-                Pet Link
-            </p>
+          <img
+            src="/Logo.png"
+            className="w-10 h-10 absolute left-[9.5px] top-[14.5px] object-cover"
+          />
+          <p className="absolute left-[77px] top-6 text-[32px] font-semibold text-left text-[#4d87fc]">
+            Pet Link
+          </p>
         </div>
         <div id="init" className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-12">
-            <img src='/image.svg' alt=" bichinhos" className="w-96 h-96"/>
-            <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-6">
-                <p className="self-stretch flex-grow-0 flex-shrink-0 text-3xl font-bold text-center text-[#212334]">
-                    O seu bichinho tambêm merece amor.
-                </p>
-                <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
-                    Entre agora pra nossa turma!
-                </p>
-            </div>
-            {/* <div className="flex-grow-0 flex-shrink-0 w-[535px] h-[86px]">
+          <img src='/image.svg' alt=" bichinhos" className="w-96 h-96" />
+          <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-6">
+            <p className="self-stretch flex-grow-0 flex-shrink-0 text-3xl font-bold text-center text-[#212334]">
+              O seu bichinho tambêm merece amor.
+            </p>
+            <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
+              Entre agora pra nossa turma!
+            </p>
+          </div>
+          {/* <div className="flex-grow-0 flex-shrink-0 w-[535px] h-[86px]">
                 <div className="w-[535px] h-[86px] absolute left-[12.5px] top-[806.5px] rounded-[15px] bg-white/20 border border-[#cdcdcd]/[0.66]" />
                     <p className="w-[130px] h-[33px] absolute left-[81px] top-[834px] text-xl text-center text-[#646464]">
                         Registrar
@@ -84,18 +84,18 @@ const Register = () => {
                     </p>
                 </div>
             </div> */}
-      
-        
+
+
         </div>
       </div>
-      
+
       <form onSubmit={handleRegister} id="right-side" className="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-8 h-screen w-1/2 py-7 px-28">
         <div id="mensage" class="flex flex-col justify-start items-center gap-4">
           <div class=" flex justify-center items-center flex-row flex-grow-0 flex-shrink-0 ">
             <p class="text-4xl font-bold text-center text-[#212334]">
-                Bem-vindo(a)!
+              Bem-vindo(a)!
             </p>
-            <svg  
+            <svg
               width="39"
               height="37"
               viewBox="0 0 39 37"
@@ -131,11 +131,11 @@ const Register = () => {
           </p>
         </div>
         <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
-          <Input placeholder="Nome de usuário" width="w-full" onChange={(e) => setUsername(e.target.value)}/>
-          <Input placeholder="E-mail" width="w-full"  onChange={(e) => setEmail(e.target.value)}/>
+          <Input placeholder="Nome de usuário" width="w-full" onChange={(e) => setUsername(e.target.value)} />
+          <Input placeholder="E-mail" width="w-full" onChange={(e) => setEmail(e.target.value)} />
           <div className="flex flex-row justify-center items-center w-full self-stretch flex-grow-0 flex-shrink-0 gap-6">
-            <Input placeholder="Senha" width="w-fit"  onChange={(e) => setPassword(e.target.value)}/>   
-            <Input placeholder="Confirmar senha" width="w-fit" onChange={(e) => setConfirmPassword(e.target.value)} />   
+            <Input placeholder="Senha" width="w-fit" onChange={(e) => setPassword(e.target.value)} />
+            <Input placeholder="Confirmar senha" width="w-fit" onChange={(e) => setConfirmPassword(e.target.value)} />
           </div>
           {error && (
             <p className="text-red-500 text-sm absolute">{error}</p> // Exibir erro se as senhas não coincidirem
@@ -143,17 +143,17 @@ const Register = () => {
         </div>
         <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-40">
           <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
-            Já possui uma conta? 
-            <a  className='text-[#407bff] cursor-pointer' 
-                onClick = {() => {
-                  router.push(`/login`); // Altere para a rota desejada
-                }}
+            Já possui uma conta?
+            <a className='text-[#407bff] cursor-pointer'
+              onClick={() => {
+                router.push(`/login`); // Altere para a rota desejada
+              }}
             >
-            Login</a>
+              Login</a>
           </p>
-          <Checkbox nome="Mostrar senha"/>
+          <Checkbox nome="Mostrar senha" />
         </div>
-        <Button 
+        <Button
           type="submit"
           name="Registrar-se"
           width="w-full"
@@ -162,44 +162,44 @@ const Register = () => {
           border="border-[#fc7bcf]"
           className="hover:bg-[#fc7bcf]"
         />
-        <div class="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 ">  
-            <svg
-                width="241"
-                height="3"
-                viewBox="0 0 241 3"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                class=""
-                preserveAspectRatio="none"
+        <div class="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 ">
+          <svg
+            width="241"
+            height="3"
+            viewBox="0 0 241 3"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class=""
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M1.50009 1.78101L239.513 1.78101"
+              stroke="#B3B3B3"
+              stroke-width="2"
+              stroke-linecap="round"
             >
-                <path
-                d="M1.50009 1.78101L239.513 1.78101"
-                stroke="#B3B3B3"
-                stroke-width="2"
-                stroke-linecap="round"
-                >
-                </path>
-            </svg>
-            <p class="ml-2 mr-2 text-sm font-light text-left text-[#646464]">
-                ou
-            </p>
-            <svg
-                width="241"
-                height="3"
-                viewBox="0 0 241 3"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                class=""
-                preserveAspectRatio="none"
+            </path>
+          </svg>
+          <p class="ml-2 mr-2 text-sm font-light text-left text-[#646464]">
+            ou
+          </p>
+          <svg
+            width="241"
+            height="3"
+            viewBox="0 0 241 3"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class=""
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M1.48676 1.78101L239.5 1.78101"
+              stroke="#B3B3B3"
+              stroke-width="2"
+              stroke-linecap="round"
             >
-                <path
-                d="M1.48676 1.78101L239.5 1.78101"
-                stroke="#B3B3B3"
-                stroke-width="2"
-                stroke-linecap="round"
-                >
-                </path>
-            </svg>
+            </path>
+          </svg>
         </div>
         <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
           <Button
@@ -221,7 +221,7 @@ const Register = () => {
         </div>
 
       </form>
-        
+
     </div>
   );
 }
