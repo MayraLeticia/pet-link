@@ -7,7 +7,13 @@ const app = express();
 const PORT = process.env.PORT || 5000; // Ajuste aqui
 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*", // Permite todas as origens (ajuste para o domínio do frontend no Vercel depois)
+        methods: ["GET", "POST"]
+    },
+    transports: ["websocket", "polling"] // Garante compatibilidade com o Vercel
+});
 
 const conn = require("./db/conn");
 conn();
