@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Configuração do Axios
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // URL do backend
+  baseURL: 'https://pet-link-backend.vercel.app/api' || 'http://localhost:3000/api', // URL do backend
 });
 
 // Função para login do usuário
