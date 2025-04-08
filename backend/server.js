@@ -29,6 +29,10 @@ app.use(express.urlencoded({ extended: true }));
 const routes = require('./routes/index.routes');
 app.use('/api', routes);
 
+// Rotas de mensagens (histórico entre usuários)
+const messageRoutes = require('./routes/message.routes');
+app.use('/api/messages', messageRoutes);
+
 // Lógica de WebSocket
 io.on('connection', (socket) => {
     console.log(`Usuário conectado: ${socket.id}`);
