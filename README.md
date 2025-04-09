@@ -19,7 +19,7 @@ Frontend: Next.js, Tailwind CSS
 ## Instalação
 
 ```bash
-$ git clone [https://github.com/Alanlan21/Unimenu.git](https://github.com/MayraLeticia/pet-link.git)
+$ git clone [https://github.com/MayraLeticia/pet-link.git](https://github.com/MayraLeticia/pet-link.git)
 $ cd pet-link
 ```
 ### Backend Setup
