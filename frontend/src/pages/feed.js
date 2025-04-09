@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import api from '../services/api';
 
-import { Card } from "../components";
+import { Card, Menu } from "../components";
 
 const Feed = () => {
 
@@ -28,7 +28,7 @@ const Feed = () => {
 
     return (
         <div id="profile" className="w-screen h-screen flex flex-row justify-center items-center">
-            <div id="sidebar" className="bg-custom-gradient h-full w-1/5"></div>
+            <Menu />
 
             <div id="main-container" className="flex-grow h-full w-3/4 flex">
                 <div className="flex flex-col justify-start items-start py-5 px-3 gap-5">
