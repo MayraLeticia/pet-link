@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import api from '../services/api';
-import { PetRegister } from "../components";
+import { Menu, PetRegister } from "../components";
 
 const Profile = () => {
   const router = useRouter();
@@ -66,8 +66,9 @@ const Profile = () => {
   
 
   return (
-    <div className="w-[1266px] min-h-[1069px] relative overflow-hidden mx-auto my-10">
-      <div className="flex flex-col justify-start items-start gap-12">
+    <div className="w-screem h-full flex flex-row relative overflow-hidden">
+      <Menu />
+      <div className="flex flex-col justify-start items-start gap-12  mx-auto my-10">
         {/* Cabeçalho */}
         <div className="w-44 h-[65px] relative">
           <p className="text-2xl font-medium text-left text-[#4d87fc]">Your profile</p>

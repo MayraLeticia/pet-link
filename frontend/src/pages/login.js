@@ -54,9 +54,9 @@ const Login = () => {
       </div>
 
       <form onSubmit={handleLogin} id="right-side" className="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-6 h-screen w-1/2 py-7 px-28">
-        <div id="mensage" class="flex flex-col justify-start items-center gap-4">
-          <div class=" flex justify-center items-center flex-row flex-grow-0 flex-shrink-0 ">
-            <p class="text-4xl font-bold text-center text-[#212334]">
+        <div id="mensage" className="flex flex-col justify-start items-center gap-4">
+          <div className=" flex justify-center items-center flex-row flex-grow-0 flex-shrink-0 ">
+            <p className="text-4xl font-bold text-center text-[#212334]">
               Olá de novo!
             </p>
             <svg
@@ -65,7 +65,7 @@ const Login = () => {
               viewBox="0 0 39 37"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              class="ml-3"
+              className="ml-3"
               preserveAspectRatio="none"
             >
               <path
@@ -90,7 +90,7 @@ const Login = () => {
               ></path>
             </svg>
           </div>
-          <p class="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
+          <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
             Bem-vindo de volta á plataforma, entre e divirta-se!
           </p>
         </div>
@@ -113,25 +113,25 @@ const Login = () => {
           border="border-[#fc7bcf]"
           className="hover:bg-[#fc7bcf]"
         />
-        <div class="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 ">
+        <div className="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 ">
           <svg
             width="241"
             height="3"
             viewBox="0 0 241 3"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            class=""
+            className=""
             preserveAspectRatio="none"
           >
             <path
               d="M1.50009 1.78101L239.513 1.78101"
               stroke="#B3B3B3"
-              stroke-width="2"
-              stroke-linecap="round"
+              strokeWidth="2"
+              strokeLinecap="round"
             >
             </path>
           </svg>
-          <p class="ml-2 mr-2 text-sm font-light text-left text-[#646464]">
+          <p className="ml-2 mr-2 text-sm font-light text-left text-[#646464]">
             ou
           </p>
           <svg
@@ -140,14 +140,14 @@ const Login = () => {
             viewBox="0 0 241 3"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            class=""
+            className=""
             preserveAspectRatio="none"
           >
             <path
               d="M1.48676 1.78101L239.5 1.78101"
               stroke="#B3B3B3"
-              stroke-width="2"
-              stroke-linecap="round"
+              strokeWidth="2"
+              strokeLinecap="round"
             >
             </path>
           </svg>
