@@ -25,6 +25,7 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
+
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: corsOptions, // Aplica as mesmas opções de CORS ao Socket.IO
