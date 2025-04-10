@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/userSchema');
-const {sign}= require('jsonwebtoken');
+const {sign} = require('jsonwebtoken');
 const { trusted } = require('mongoose');
 
 class userController{
@@ -41,12 +41,12 @@ class userController{
                 if(!isMatch)return res.status(401).send('Senha incorreta');
                 
                 const token = sign({},'789237109234sfdadf',{
-                    subject: user.id,
+                    subject: user._id.toString(), // Corrigido
                     expiresIn:"1d"
                 } )
 
                 res.status(200).json({
-                    autehenticade: true,
+                    authenticated: true, // Corrigido
                     token,
                     username: user.username,
                     email: user.email,

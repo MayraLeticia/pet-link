@@ -2,13 +2,14 @@
 //usem como quiserem
 "use client";
 
+import { Menu } from "../components";
+
 import { signIn } from "next-auth/react";
 
-export default function Login() {
+export default function Teste() {
   return (
-    <div>
-      <h1>Login</h1>
-      <button onClick={() => signIn("google")}>Sign in with Google</button>
+    <div className="w-screen h-screen flex flex-row justify-start items-center">
+      <Menu />
     </div>
   );
 }

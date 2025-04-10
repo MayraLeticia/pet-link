@@ -7,15 +7,28 @@ const app = express();
 
 const PORT = process.env.PORT || 5000; // Ajuste aqui
 
+// Configuração dinâmica de CORS
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:3000']; // Valor padrão para desenvolvimento
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Permite requisições sem origem (como Postman) ou origens permitidas
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors: {
-        origin: "*", // Permite todas as origens (ajuste para o domínio do frontend no Vercel depois)
-        methods: ["GET", "POST"]
-    },
-    transports: ["websocket", "polling"] // Garante compatibilidade com o Vercel
-
+    cors: corsOptions, // Aplica as mesmas opções de CORS ao Socket.IO
+    transports: ['websocket', 'polling'],
 });
 
 // Conexão com o MongoDB
@@ -25,7 +38,7 @@ conn();
 // Importa o schema de mensagens
 const Message = require('./models/messageSchema');
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
