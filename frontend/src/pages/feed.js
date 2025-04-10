@@ -27,7 +27,7 @@ const Feed = () => {
     }, []);
 
     return (
-        <div id="profile" className="w-screen h-screen flex flex-row justify-center items-center">
+        <div id="Home" className="w-screen h-screen flex flex-row justify-center items-center">
             <Menu />
 
             <div id="main-container" className="flex-grow h-full w-3/4 flex">

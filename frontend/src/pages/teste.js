@@ -12,6 +12,7 @@ export default function GeolocationTestPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+
       <main className="main">
         <h1 className="title">
           Teste de Geolocalização
@@ -74,6 +75,3 @@ export default function GeolocationTestPage() {
           box-sizing: border-box;
         }
       `}</style>
-    </div>
-  );
-}

@@ -2,9 +2,10 @@
 
 import axios from 'axios';
 
-// Configuração do Axios
+console.log("Base URL:", process.env.NEXT_PUBLIC_API_URL);
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // URL do backend
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 // Função para login do usuário
