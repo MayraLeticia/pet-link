@@ -75,3 +75,6 @@ export default function GeolocationTestPage() {
           box-sizing: border-box;
         }
       `}</style>
+    </div>
+  );
+}
