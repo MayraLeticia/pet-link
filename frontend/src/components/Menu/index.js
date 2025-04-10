@@ -1,5 +1,12 @@
+"use client";
+
+import { useRouter } from 'next/navigation';
+
 
 const Menu = () => {
+
+    const router = useRouter();
+
     return (
         <div className="w-1/5 relative">
             <div id="sidebar" className="bg-custom-gradient h-screen w-1/5 fixed top-0 left-0 gap-8 px-8 py-12 flex flex-col justify-start items-start">
@@ -21,28 +28,28 @@ const Menu = () => {
                     
                     <div className="flex flex-col justify-center items-start self-stretch flex-grow-0 flex-shrink-0">
 
-                        <div className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent">
+                        <button className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent" onClick={() => {router.push(`/feed`)}}>
                             <img src="icons/Paw.png" className="w-[26px] h-[25px] object-cover" />
                             <p className="text-base font-medium text-left text-black">
                                 Home
                             </p>
-                        </div>
+                        </button>
 
-                        <div className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent">
+                        <button className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent" onClick={() => {router.push(``)}}>
                             <img src="icons/Heart.png" className="w-[26px] h-[26px] object-cover" />
                             <p className="text-base font-medium text-left text-black">
                                 Salvos
                             </p>
-                        </div>
+                        </button>
 
-                        <div className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent">
+                        <button className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent" onClick={() => {router.push(`/map`)}}>
                             <img src="icons/Map.png" className="w-[25px] h-[26px] object-cover" />
                             <p className="text-base font-medium text-left text-black">
                                 Mapa
                             </p>
-                        </div>
+                        </button>
 
-                        <div className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent">
+                        <button className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent" onClick={() => {router.push(`/chat`)}}>
                             <img
                                 src="icons/chat-bubbles-with-ellipsis.png"
                                 className="w-[26px] h-[26px] object-cover"
@@ -50,7 +57,7 @@ const Menu = () => {
                             <p className="text-base font-medium text-left text-black">
                                 Menssagem
                             </p>
-                        </div>
+                        </button>
 
                     </div>
                 </div>
