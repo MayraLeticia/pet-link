@@ -15,7 +15,7 @@ const Feed = () => {
     useEffect(() => {
         const fetchPets = async () => {
             try {
-                const response = await api.get('api/pet/');
+                const response = await api.get('/pet/');
                 setPets(response.data);
             } catch (error) {
                 console.error("Erro ao buscar pets:", error);
