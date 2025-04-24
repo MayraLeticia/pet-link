@@ -22,6 +22,7 @@ const PetsSchema = new mongoose.Schema({
     },
   },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  feedId:{type:mongoose.Schema.Types.ObjectId, ref: "Feed", require: false},
   imgAnimal: { type: [String] },
 });
 PetsSchema.index({ coordinates: '2dsphere' });
