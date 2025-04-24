@@ -24,6 +24,7 @@ const PetsSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   feedId:{type:mongoose.Schema.Types.ObjectId, ref: "Feed", require: false},
   imgAnimal: { type: [String] },
+  favoritos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Pet" }]
 });
 PetsSchema.index({ coordinates: '2dsphere' });
 module.exports = mongoose.model('Pet', PetsSchema);
