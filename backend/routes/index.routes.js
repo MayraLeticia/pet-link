@@ -4,13 +4,15 @@ const petsRoutes = require('./pets.routes');
 const feedRoutes = require('./feed.routes');
 //const chatRoutes = require('./chat.routes');
 const locationRoutes = require('./location.routes');
+const favoritesRoutes = require('./favorites.routes');
 
 const router = express.Router();
 
 router.use('/user', userRoutes);
 router.use('/pet', petsRoutes);
 router.use('/feed', feedRoutes);
-//  router.use('/chat', chatRoutes);
+//router.use('/chat', chatRoutes);
 router.use('/location', locationRoutes);
+router.use('/favorites', favoritesRoutes);
 
 module.exports = router;
