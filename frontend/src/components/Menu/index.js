@@ -35,7 +35,7 @@ const Menu = () => {
                             </p>
                         </button>
 
-                        <button className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent" onClick={() => {router.push(``)}}>
+                        <button className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent" onClick={() => {router.push(`/salvos`)}}>
                             <img src="icons/Heart.png" className="w-[26px] h-[26px] object-cover" />
                             <p className="text-base font-medium text-left text-black">
                                 Salvos
