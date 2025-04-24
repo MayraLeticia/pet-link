@@ -9,13 +9,13 @@ const Map = () => {
             <div className="flex flex-col justify-start items-start flex-grow h-full p-5 gap-7">
                 <div id="mensage" className="flex flex-col justify-start items-start px-2 gap-0">
                     <p className="text-2xl font-medium text-left text-[#4d87fc]">
-                        Na sua area!
+                        Na sua área!
                     </p>
                     <div className="flex flex-row justify-start items-start flex-grow-0 flex-shrink-0 gap-2">
                         <p className="text-sm font-medium text-left">
                             <span className="text-sm font-medium text-left text-black">Nós achamos </span>
                             <span className="text-sm font-medium text-left text-[#ffa2df]">aaa</span>
-                            <span className="text-sm font-medium text-left text-black"> pets na sua area</span>
+                            <span className="text-sm font-medium text-left text-black"> pets na sua área</span>
                         </p>
                     </div>
                 </div>
