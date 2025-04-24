@@ -4,9 +4,9 @@ import { Menu } from "../components";
 const Chat = () => {
 
     return (
-        <div id="chat" className="w-screen h-screen flex flex-row justify-center items-center">
+        <div id="chat" className="w-screen h-screen flex flex-row justify-start items-start">
             <Menu />
-            <div className="flex flex-col justify-start items-start w-auto h-screen p-3 gap-5">
+            <div className="flex flex-col justify-start items-start flex-grow h-full p-5 gap-7">
                 <div id="mensage" className="flex flex-col justify-start items-start px-2 gap-0">
                     <p className="text-2xl font-medium text-left text-[#4d87fc]">
                         Seus contatos!
@@ -19,9 +19,9 @@ const Chat = () => {
                         </p>
                     </div>
                 </div>
-                <div className="flex justify-start items-center">
+                <div className="flex justify-start items-center h-full w-full">
                     <div id='menu de mensagens'
-                        className="flex flex-col justify-start items-start px-6 py-4 gap-4 rounded-tl-lg bg-[#fff5fc]"
+                        className="flex flex-col justify-start items-start h-full px-6 py-4 gap-4 rounded-tl-lg bg-[#fff5fc]"
                         style={{ boxShadow: "5px 0px 20px -15px rgba(0,0,0,0.25)" }}
                     >
                         <div id='contatos-online' className="flex flex-col justify-start items-start relative gap-2">
@@ -30,25 +30,25 @@ const Chat = () => {
                             </p>
                             <div id='itens' className="flex justify-start items-center gap-1">
                                 <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-                                    
+
                                 </div>
                                 <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-                                    
+
                                 </div>
                                 <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-                                    
+
                                 </div>
                                 <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-                                    
+
                                 </div>
                                 <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-                                    
+
                                 </div>
                                 <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-                                    
+
                                 </div>
                                 <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-                                    
+
                                 </div>
                                 <div className="flex justify-center items-center w-6 h-6 rounded-full bg-white">
                                     <img
@@ -134,8 +134,8 @@ const Chat = () => {
                                         </p>
                                     </div>
                                 </div>
-                                
-                                
+
+
                             </div>
                         </div>
                     </div>
