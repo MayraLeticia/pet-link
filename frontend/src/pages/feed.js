@@ -10,6 +10,40 @@ const Feed = () => {
   const [pets, setPets] = useState([]);
   const [selectedPet, setSelectedPet] = useState(null); // Pet selecionado
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredPets = pets.filter((pet) =>
+    pet.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  const toggleSavePetBackend = async (pet) => {
+    const token = localStorage.getItem("token");
+  
+    try {
+      await api.post(
+        "/api/users/pets",
+        { petId: pet._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Atualiza estado local de salvos
+      const isSaved = savedPets.some((p) => p._id === pet._id);
+      const updated = isSaved
+        ? savedPets.filter((p) => p._id !== pet._id)
+        : [...savedPets, pet];
+  
+      setSavedPets(updated);
+      localStorage.setItem("savedPets", JSON.stringify(updated));
+    } catch (err) {
+      console.error("Erro ao salvar pet no backend:", err);
+      alert("Você precisa estar logado para salvar pets.");
+    }
+  };
+  
     useEffect(() => {
         const fetchPets = async () => {
             try {
@@ -24,6 +58,8 @@ const Feed = () => {
     fetchPets();
   }, []);
 
+
+
   return (
     <div id="Home" className="w-screen h-screen flex flex-row justify-center items-center">
       <Menu />
@@ -37,9 +73,9 @@ const Feed = () => {
             </p>
             <div className="flex flex-row justify-start items-start gap-2">
               <p className="text-sm font-medium text-left">
-                <span className="text-sm font-medium text-left text-black">Resultado para </span>
-                <span className="text-sm font-medium text-left text-[#ffa2df]">{pets.length}</span>
-                <span className="text-sm font-medium text-left text-black"> animais</span>
+                <span className="text-black">Resultado para </span>
+                <span className="text-[#ffa2df]">{filteredPets.length}</span>
+                <span className="text-black"> animais</span>
               </p>
             </div>
           </div>
@@ -58,11 +94,13 @@ const Feed = () => {
               <img src="down-chevron.png" className="w-2 h-[9px] object-cover" />
             </div>
 
-            {/* Campo de busca (ou outro filtro) */}
-            <div className="w-[300px] h-[50px] border border-[#646464] rounded-[50px] px-4 flex items-center">
+            {/* Campo de busca */}
+            <div className="w-[300px] h-[50px] border border-[#646464] rounded-[50px] px-4 flex items-center ml-auto">
               <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder="Buscar por nome..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full h-full bg-transparent outline-none text-sm text-[#646464]"
               />
             </div>
@@ -71,31 +109,57 @@ const Feed = () => {
           {/* Grid de Cards */}
           <div
             id="cards-container"
-            className={`grid ${
-              selectedPet ? "grid-cols-2 lg:grid-cols-3" : "grid-cols-3 lg:grid-cols-4"
-            } gap-2 flex-grow transition-all duration-300 ${
-              selectedPet ? "lg:w-auto" : "lg:w-full"
-            }`}
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-[20px] gap-y-[20px] w-full max-w-[1280px] mx-auto"
           >
-            {pets.map((pet) => (
-              <Card
+            {filteredPets.map((pet) => (
+              <div
                 key={pet._id}
-                profilePhoto={pet.imgAnimal?.[0]?.url || "placeholder.jpg"}
-                name={pet.name}
-                location={pet.location || "Localização não informada"}
                 onClick={() => setSelectedPet(pet)}
-              />
+                className="relative w-full max-w-[260px] aspect-[4/5] rounded-[15px] bg-gradient-to-br from-pink-200 to-purple-200 p-4 shadow-md cursor-pointer flex flex-col justify-between"
+              >
+                {/* Botões no topo direito */}
+                <div className="absolute top-2 right-2 flex gap-2">
+                  <button className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm">
+                    ❤️
+                  </button>
+                  <button className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm">
+                    👎
+                  </button>
+                </div>
+
+                {/* Imagem do pet */}
+                <img
+                  src={pet.imgAnimal?.[0]?.url || "placeholder.jpg"}
+                  alt={pet.name}
+                  className="w-full h-[140px] object-cover rounded-md mb-2"
+                />
+
+                {/* Nome e localização */}
+                <div className="flex flex-col gap-1 mt-auto">
+                  <p className="font-bold">{pet.name}</p>
+                  <p className="text-sm text-gray-600">
+                    {pet.location || "Localização não informada"}
+                  </p>
+                </div>
+
+                {/* Botão de mensagem */}
+                <div className="absolute bottom-2 right-2">
+                  <button className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm">
+                    💬
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
+
         </div>
 
         {/* Painel lateral com dados do pet */}
         {selectedPet && (
           <div
             id="details-panel"
-            className={`w-1/3 bg-custom-gradient p-4 transition-transform duration-300 ${
-              selectedPet ? "translate-x-0" : "translate-x-full"
-            }`}
+            className={`w-1/3 bg-custom-gradient p-4 transition-transform duration-300 ${selectedPet ? "translate-x-0" : "translate-x-full"
+              }`}
           >
             <button onClick={() => setSelectedPet(null)} className="absolute top-6 right-4">
               <img src="icons/Cancel.png" className="w-4 h-4 object-cover" />
@@ -119,3 +183,4 @@ const Feed = () => {
 };
 
 export default Feed;
+
