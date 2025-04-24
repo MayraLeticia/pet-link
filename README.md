@@ -4,7 +4,7 @@
 ### Descrição
 
 
-Petlink é uma plataforma de relacionamento paara pets, com a proposta de proporcionar aos tutores uma maneira divertida e segura de socializar seus animais de estimação.
+Petlink é uma plataforma de relacionamento para pets, com a proposta de proporcionar aos tutores uma maneira divertida e segura de socializar seus animais de estimação.
 
 <img src="https://github.com/user-attachments/assets/bdfebeab-b67f-4ff2-b41a-c8a9e3fc153a" width="100"/>
 
