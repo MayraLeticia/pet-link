@@ -10,16 +10,16 @@ const Feed = () => {
   const [pets, setPets] = useState([]);
   const [selectedPet, setSelectedPet] = useState(null); // Pet selecionado
 
-  useEffect(() => {
-    const fetchPets = async () => {
-      try {
-        const response = await api.get('/pet/');
-        setPets(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar pets:", error);
-        alert("Erro ao carregar os dados dos pets.");
-      }
-    };
+    useEffect(() => {
+        const fetchPets = async () => {
+            try {
+                const response = await api.get('/pet/');
+                setPets(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar pets:", error);
+                alert("Erro ao carregar os dados dos pets.");
+            }
+        };
 
     fetchPets();
   }, []);
