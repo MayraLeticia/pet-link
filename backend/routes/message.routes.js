@@ -1,24 +1,78 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Message = require('../models/messageSchema');
+const { decrypt } = require('../utils/encrypt');
 
-// GET /api/messages/:user1/:user2
+// Buscar últimas conversas de um usuário
+router.get('/conversations/:userId', async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const objectId = new mongoose.Types.ObjectId(userId);
+
+        const conversations = await Message.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { sender: objectId },
+                        { receiver: objectId }
+                    ]
+                }
+            },
+            {
+                $sort: { timestamp: -1 }
+            },
+            {
+                $group: {
+                    _id: {
+                        $cond: [
+                            { $eq: ["$sender", objectId] },
+                            "$receiver",
+                            "$sender"
+                        ]
+                    },
+                    lastMessageAt: { $first: "$timestamp" }
+                }
+            },
+            {
+                $sort: { lastMessageAt: -1 }
+            }
+        ]);
+
+        res.status(200).json(conversations);
+
+    } catch (error) {
+        console.error('Erro ao buscar conversas:', error);
+        res.status(500).json({ error: 'Erro ao buscar conversas.' });
+    }
+});
+
+// Buscar histórico de mensagens entre dois usuários
 router.get('/:user1/:user2', async (req, res) => {
-  const { user1, user2 } = req.params;
+    const { user1, user2 } = req.params;
+    try {
+        const user1Id = new mongoose.Types.ObjectId(user1);
+        const user2Id = new mongoose.Types.ObjectId(user2);
 
-  try {
-    const messages = await Message.find({
-      $or: [
-        { sender: user1, receiver: user2 },
-        { sender: user2, receiver: user1 }
-      ]
-    }).sort({ timestamp: 1 });
+        const messages = await Message.find({
+            $or: [
+                { sender: user1Id, receiver: user2Id },
+                { sender: user2Id, receiver: user1Id }
+            ]
+        }).sort({ timestamp: 1 });
 
-    res.json(messages);
-  } catch (err) {
-    console.error('Erro ao buscar histórico de mensagens:', err);
-    res.status(500).json({ error: 'Erro ao buscar mensagens' });
-  }
+        const decryptedMessages = messages.map(msg => ({
+            ...msg.toObject(),
+            content: decrypt(msg.content),
+        }));
+
+        res.status(200).json(decryptedMessages);
+
+    } catch (error) {
+        console.error('Erro ao buscar mensagens:', error);
+        res.status(500).json({ error: 'Erro ao buscar mensagens.' });
+    }
 });
 
 module.exports = router;
