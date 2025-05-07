@@ -18,13 +18,15 @@ const PetsSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number], // [lng, lat]
-      index: '2dsphere',
     },
   },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  feedId:{type:mongoose.Schema.Types.ObjectId, ref: "Feed", require: false},
+  feedId: { type: mongoose.Schema.Types.ObjectId, ref: "Feed", required: false },
   imgAnimal: { type: [String] },
   favoritos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Pet" }]
 });
+
+// Índice geoespacial
 PetsSchema.index({ coordinates: '2dsphere' });
+
 module.exports = mongoose.model('Pet', PetsSchema);

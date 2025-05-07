@@ -19,7 +19,7 @@ feedRoutes.delete('/:id', new feedController().deleteFeed);
 feedRoutes.post('/:feedId/comment', new feedController().addComment);
 
 //like
-feedRoutes.post('/:id/like', feedController.toggleLike);
+feedRoutes.post('/:id/like', new feedController().toggleLike);
 
 
 module.exports = feedRoutes;
