@@ -6,7 +6,7 @@ import api from "../services/api";
 
 import { Card, Menu } from "../components";
 
-const Feed = () => {
+const Home = () => {
   const [pets, setPets] = useState([]);
   const [selectedPet, setSelectedPet] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -165,4 +165,4 @@ const Feed = () => {
   );
 };
 
-export default Feed;
+export default Home;

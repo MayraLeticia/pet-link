@@ -1,6 +1,9 @@
 "use client";
 
 import { Inter } from "next/font/google";
+import { SessionProvider } from "next-auth/react";
+import { SocketProvider } from "../contexts/SocketContext";
+import "../styles/globals.css"; 
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,13 +12,15 @@ export const metadata = {
   description: "",
 };
 
-import { SessionProvider } from "next-auth/react";
-import "../styles/globals.css"; 
 
 export default function App({ Component, pageProps }) {
   return (
     <SessionProvider session={pageProps.session}> 
-      <Component {...pageProps} />
+      <SocketProvider>
+        <div className={inter.className}>
+          <Component {...pageProps} />
+        </div>
+      </SocketProvider>
     </SessionProvider>
   );
 }
