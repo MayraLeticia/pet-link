@@ -6,11 +6,13 @@ const commentSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
   });
 
-const FeedSchema = new mongoose.Schema({
-    description:{type: String, require: false},
-    comments:[commentSchema],
-    feedImg:{type: String},
+  const FeedSchema = new mongoose.Schema({
+    description: { type: String },
+    comments: [commentSchema],
+    feedImg: { type: String },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    petId : {type: mongoose.Schema.Types.ObjectId, ref: "Feed", required: false}
-})
+    petId: { type: mongoose.Schema.Types.ObjectId, ref: "Pet" },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+});
+
 module.exports = mongoose.model('Feed', FeedSchema);    
