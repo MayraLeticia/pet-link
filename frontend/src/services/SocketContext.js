@@ -14,6 +14,10 @@ export const SocketProvider = ({ children }) => {
     if (status === "authenticated" && session?.user?.id) {
       const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
         transports: ["websocket", "polling"],
+
+        auth: {
+            token: localStorage.getItem("token"), // ou do session
+          },
       });
 
       newSocket.on("connect", () => {

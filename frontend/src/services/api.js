@@ -44,35 +44,25 @@ export const cadastrarPet = async (petData) => {
 };
 
 // Buscar conversas do usuário
-export const getConversations = async (userId) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await api.get(`/messages/conversations/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar conversas:", error.response?.data);
-    throw error;
-  }
+export const getConversations = async () => {
+  const token = localStorage.getItem("token");
+  const response = await api.get(`/messages/conversations`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 };
 
 // Buscar mensagens entre dois usuários
-export const getMessages = async (userId1, userId2) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await api.get(`/messages/${userId1}/${userId2}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar mensagens:", error.response?.data);
-    throw error;
-  }
+export const getMessages = async (contactId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.get(`/messages/${contactId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 };
 
 // Buscar informações de um usuário por ID

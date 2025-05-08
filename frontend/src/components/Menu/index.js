@@ -11,12 +11,12 @@ const Menu = () => {
         <div className="w-1/5 relative">
             <div id="sidebar" className="bg-custom-gradient h-screen w-1/5 fixed top-0 left-0 gap-8 px-8 py-12 flex flex-col justify-start items-start">
 
-                <div className="flex justify-start items-center relative">
+                <div className="flex justify-start items-center relative cursor-pointer" onClick={() => {router.push(`/home`)}}>
                     <img
                         src="/Logo.png"
                         className="w-[67px] h-[67px] object-cover"
                     />
-                    <p className="text-[32px] font-semibold text-left text-[#4d87fc]">
+                    <p className="text-[32px] font-semibold text-left text-[#4d87fc] cursor-pointer">
                         Pet Link
                     </p>
                 </div>
@@ -28,7 +28,7 @@ const Menu = () => {
                     
                     <div className="flex flex-col justify-center items-start self-stretch flex-grow-0 flex-shrink-0">
 
-                        <button className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent" onClick={() => {router.push(`/feed`)}}>
+                        <button className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-4 bg-transparent" onClick={() => {router.push(`/home`)}}>
                             <img src="icons/Paw.png" className="w-[26px] h-[25px] object-cover" />
                             <p className="text-base font-medium text-left text-black">
                                 Home

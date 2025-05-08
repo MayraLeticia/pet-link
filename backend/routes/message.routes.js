@@ -3,11 +3,12 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Message = require('../models/messageSchema');
 const { decrypt } = require('../utils/encrypt');
+const { verifyToken } = require('../utils/verifyToken');
 
 // Buscar últimas conversas de um usuário
-router.get('/conversations/:userId', async (req, res) => {
-    const { userId } = req.params;
-
+router.get('/conversations', verifyToken, async (req, res) => {
+    const userId = req.user.id;
+    
     try {
         const objectId = new mongoose.Types.ObjectId(userId);
 
@@ -49,22 +50,23 @@ router.get('/conversations/:userId', async (req, res) => {
 });
 
 // Buscar histórico de mensagens entre dois usuários
-router.get('/:user1/:user2', async (req, res) => {
-    const { user1, user2 } = req.params;
+router.get('/:contactId', verifyToken, async (req, res) => {
+    
     try {
-        const user1Id = new mongoose.Types.ObjectId(user1);
-        const user2Id = new mongoose.Types.ObjectId(user2);
-
+        const userId = req.user.id; // vem do JWT validado
+        const contactId = req.params.contactId;
+      
         const messages = await Message.find({
-            $or: [
-                { sender: user1Id, receiver: user2Id },
-                { sender: user2Id, receiver: user1Id }
-            ]
+          $or: [
+            { sender: userId, receiver: contactId },
+            { sender: contactId, receiver: userId }
+          ]
         }).sort({ timestamp: 1 });
 
         const decryptedMessages = messages.map(msg => ({
             ...msg.toObject(),
-            content: decrypt(msg.content),
+            content: decrypt(msg.content)
+        
         }));
 
         res.status(200).json(decryptedMessages);

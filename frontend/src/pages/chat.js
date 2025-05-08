@@ -19,7 +19,7 @@ const Chat = () => {
         if (status === "authenticated" && session?.user?.id) {
             const fetchConversations = async () => {
                 try {
-                    const data = await getConversations(session.user.id);
+                    const data = await getConversations();
                     setConversations(data);
 
                     // Buscar informações dos usuários das conversas
@@ -44,7 +44,7 @@ const Chat = () => {
         if (selectedConversation && session?.user?.id) {
             const fetchMessages = async () => {
                 try {
-                    const data = await getMessages(session.user.id, selectedConversation);
+                    const data = await getMessages(selectedConversation);
                     setMessages(data);
                 } catch (error) {
                     console.error("Erro ao carregar mensagens:", error);
@@ -57,6 +57,7 @@ const Chat = () => {
     // Receber mensagens em tempo real
     useEffect(() => {
         if (socket && session?.user?.id) {
+            socket.emit("join", session.user.id);
             socket.on("private_message", (message) => {
                 if (
                     message.sender === selectedConversation ||
@@ -201,7 +202,7 @@ const Chat = () => {
                                             key={index}
                                             className={`mb-2 p-2 rounded-lg ${msg.sender === session.user.id
                                                 ? "bg-blue-100 ml-auto"
-                                                : "bg-gray 컬러-100"
+                                                : "bg-gray-100"
                                                 } max-w-[70%]`}
                                         >
                                             <p className="text-sm">{msg.content}</p>
