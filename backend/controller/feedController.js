@@ -195,4 +195,4 @@ class feedController {
     }
 }
 
-module.exports = {feedController};
+module.exports = feedController;
