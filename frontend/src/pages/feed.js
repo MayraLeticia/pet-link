@@ -15,45 +15,48 @@ const Feed = () => {
   const filteredPets = pets.filter((pet) =>
     pet.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
-  const toggleSavePetBackend = async (pet) => {
+
+  const handleFavoritePet = async (pet) => {
     const token = localStorage.getItem("token");
-  
+
+    if (!token) {
+      alert("Você precisa estar logado para salvar um pet!");
+      return;
+    }
+
+    const userId = JSON.parse(atob(token.split(".")[1])).sub;
+
     try {
       await api.post(
-        "/api/users/pets",
-        { petId: pet._id },
+        "/api/favorites/add",
+        {
+          petId: userId,
+          favoritePetId: pet._id,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
+          }
         }
       );
-  
-      // Atualiza estado local de salvos
-      const isSaved = savedPets.some((p) => p._id === pet._id);
-      const updated = isSaved
-        ? savedPets.filter((p) => p._id !== pet._id)
-        : [...savedPets, pet];
-  
-      setSavedPets(updated);
-      localStorage.setItem("savedPets", JSON.stringify(updated));
-    } catch (err) {
-      console.error("Erro ao salvar pet no backend:", err);
-      alert("Você precisa estar logado para salvar pets.");
+      alert("Pet salvo como favorito!");
+    } catch (error) {
+      console.error("Erro ao salvar favorito:", error);
+      alert("Erro ao salvar favorito.");
     }
   };
-  
-    useEffect(() => {
-        const fetchPets = async () => {
-            try {
-                const response = await api.get('/pet/');
-                setPets(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar pets:", error);
-                alert("Erro ao carregar os dados dos pets.");
-            }
-        };
+
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const response = await api.get('/pet/');
+        setPets(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar pets:", error);
+        alert("Erro ao carregar os dados dos pets.");
+      }
+    };
 
     fetchPets();
   }, []);
@@ -119,7 +122,13 @@ const Feed = () => {
               >
                 {/* Botões no topo direito */}
                 <div className="absolute top-2 right-2 flex gap-2">
-                  <button className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Impede que clique selecione o pet
+                      handleFavoritePet(pet); // Chama a função que envia pro backend
+                    }}
+                    className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm"
+                  >
                     ❤️
                   </button>
                   <button className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm">

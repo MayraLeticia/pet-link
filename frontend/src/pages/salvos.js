@@ -12,6 +12,31 @@ const Salvos = () => {
     setSavedPets(storedPets);
   }, []);
 
+  const handleFavoritePet = async (pet) => {
+    const token = localStorage.getItem("token");
+    const userId = JSON.parse(atob(token.split(".")[1])).sub;
+  
+    try {
+      await api.post(
+        "/api/favorites/add",
+        {
+          petId: userId,
+          favoritePetId: pet._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+      alert("Pet salvo como favorito!");
+    } catch (error) {
+      console.error("Erro ao salvar favorito:", error);
+      alert("Erro ao salvar favorito.");
+    }
+  };
+  
+
   return (
     <div id="Home" className="w-screen h-screen flex flex-row justify-center items-center">
       <Menu />
