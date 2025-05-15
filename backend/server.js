@@ -9,6 +9,21 @@ const { encrypt, decrypt } = require('./utils/encrypt');
 
 const PORT = process.env.PORT || 5000;
 
+// Lista de palavras ofensivas
+const offensiveWords = require('./utils/offensiveWords');
+
+// Função para detectar ofensas
+function censurarOfensas(texto) {
+  const textoNormalizado = texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  let censurado = texto;
+
+  offensiveWords.forEach(palavra => {
+    const regex = new RegExp(palavra, 'gi');
+    censurado = censurado.replace(regex, '***');
+  });
+
+  return censurado;
+}
 // Configuração dinâmica de CORS
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
@@ -63,9 +78,13 @@ io.on('connection', (socket) => {
 
   // Envia e salva a mensagem privada
   socket.on('private_message', async ({ sender, receiver, content }) => {
+    // Verificar se há linguagem ofensiva
+    const conteudoCensurado = censurarOfensas(content);
+
+
     try {
       // Criptografar a mensagem recebida
-      const encryptedContent = encrypt(content);
+      const encryptedContent = encrypt(conteudoCensurado);
 
       // Salvar mensagem criptografada no banco
       const newMessage = await Message.create({
@@ -77,7 +96,7 @@ io.on('connection', (socket) => {
       // Preparar a mensagem descriptografada para envio
       const decryptedMessage = {
         ...newMessage.toObject(),
-        content: decrypt(newMessage.content),
+        content: conteudoCensurado, // já está limpo
       };
 
       // Emitir a mensagem para o receptor

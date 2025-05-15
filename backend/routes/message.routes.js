@@ -62,10 +62,21 @@ router.get('/:user1/:user2', async (req, res) => {
             ]
         }).sort({ timestamp: 1 });
 
-        const decryptedMessages = messages.map(msg => ({
-            ...msg.toObject(),
-            content: decrypt(msg.content),
-        }));
+        const decryptedMessages = messages.map(msg => {
+    let contentDescriptografado;
+
+    try {
+        contentDescriptografado = decrypt(msg.content);
+    } catch (err) {
+        console.warn(`Erro ao descriptografar mensagem ${msg._id}: ${err.message}`);
+        contentDescriptografado = '[mensagem ilegível]';
+    }
+
+    return {
+        ...msg.toObject(),
+        content: contentDescriptografado,
+    };
+});
 
         res.status(200).json(decryptedMessages);
 
