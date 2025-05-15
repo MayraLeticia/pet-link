@@ -10,10 +10,53 @@ const Feed = () => {
   const [pets, setPets] = useState([]);
   const [selectedPet, setSelectedPet] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showRadiusMenu, setShowRadiusMenu] = useState(false);
+  const [selectedRadius, setSelectedRadius] = useState(10); // Valor padrão: 10km
 
-  const filteredPets = pets.filter((pet) =>
-    pet.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Estados para o popup de filtro
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [filters, setFilters] = useState({
+    gender: "", // "male" ou "female"
+    ageMin: 0,
+    ageMax: 20,
+    species: "", // "dog", "cat", etc.
+    breed: ""
+  });
+
+  // Listas de opções para seleção
+  const speciesList = ["Cachorro", "Gato", "Ave", "Roedor", "Réptil", "Outro"];
+
+  // Listas de raças por espécie
+  const breedsBySpecies = {
+    "Cachorro": ["Labrador", "Poodle", "Bulldog", "Pastor Alemão", "Golden Retriever", "Pinscher", "Pitbull", "Shih Tzu", "Yorkshire", "Outro"],
+    "Gato": ["Siamês", "Persa", "Maine Coon", "Angorá", "Sphynx", "Bengal", "Ragdoll", "Outro"],
+    "Ave": ["Canário", "Periquito", "Calopsita", "Papagaio", "Outro"],
+    "Roedor": ["Hamster", "Coelho", "Porquinho da Índia", "Chinchila", "Outro"],
+    "Réptil": ["Tartaruga", "Iguana", "Gecko", "Outro"],
+    "Outro": ["Outro"]
+  };
+
+  const filteredPets = pets.filter((pet) => {
+    // Filtro por termo de busca
+    const matchesSearch = pet.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Filtro por gênero
+    const matchesGender = !filters.gender || pet.gender === filters.gender;
+
+    // Filtro por idade
+    const age = pet.age ? parseInt(pet.age) : 0;
+    const matchesAge = age >= filters.ageMin && age <= filters.ageMax;
+
+    // Filtro por espécie
+    const matchesSpecies = !filters.species ||
+      (pet.specie && pet.specie.toLowerCase() === filters.species.toLowerCase());
+
+    // Filtro por raça
+    const matchesBreed = !filters.breed ||
+      (pet.race && pet.race.toLowerCase() === filters.breed.toLowerCase());
+
+    return matchesSearch && matchesGender && matchesAge && matchesSpecies && matchesBreed;
+  });
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -28,6 +71,23 @@ const Feed = () => {
 
     fetchPets();
   }, []);
+
+  // Fechar os menus quando clicar fora deles
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showRadiusMenu && !event.target.closest('.location-dropdown')) {
+        setShowRadiusMenu(false);
+      }
+      if (showFilterMenu && !event.target.closest('.filter-dropdown')) {
+        setShowFilterMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showRadiusMenu, showFilterMenu]);
 
   return (
     <div
@@ -57,24 +117,218 @@ const Feed = () => {
 
           {/* Filtros */}
           <div className="flex items-center gap-6 w-full">
-            <div className="relative w-[132px] h-[50px] border border-[#646464] rounded-[50px] px-4 flex items-center justify-between">
-              <p className="text-sm font-medium text-[#646464]">Location</p>
-              <img src="down-chevron.png" className="w-2 h-[9px] object-cover" />
+            <div className="relative location-dropdown">
+              <div
+                className="w-[132px] h-[50px] border border-[#646464] rounded-[50px] px-4 flex items-center justify-between cursor-pointer"
+                onClick={() => setShowRadiusMenu(!showRadiusMenu)}
+              >
+                <p className="text-sm font-medium text-[#646464]">Location</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#646464]">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+
+              {showRadiusMenu && (
+                <div className="absolute top-[55px] left-0 w-[220px] bg-white shadow-lg rounded-lg p-4 z-10 border border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-3">Selecione o raio:</p>
+                  <div className="mb-4">
+                    <input
+                      type="range"
+                      min="1"
+                      max="100"
+                      value={selectedRadius}
+                      onChange={(e) => setSelectedRadius(parseInt(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4d87fc]"
+                      style={{
+                        background: `linear-gradient(to right, #4d87fc ${selectedRadius}%, #e5e7eb ${selectedRadius}%)`,
+                      }}
+                    />
+                    <div className="flex justify-between mt-1">
+                      <span className="text-xs text-gray-500">1km</span>
+                      <span className="text-sm font-medium text-[#4d87fc]">{selectedRadius}km</span>
+                      <span className="text-xs text-gray-500">100km</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      className="px-3 py-1 bg-[#4d87fc] text-white text-sm font-medium rounded-full"
+                      onClick={() => setShowRadiusMenu(false)}
+                    >
+                      Aplicar
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="relative w-[114px] h-[50px] border border-[#646464] rounded-[50px] px-4 flex items-center justify-center gap-2">
-              <img src="filter.png" className="w-[22px] h-[23px] object-cover" />
-              <img src="down-chevron.png" className="w-2 h-[9px] object-cover" />
+            <div className="relative filter-dropdown">
+              <div
+                className="w-[114px] h-[50px] border border-[#646464] rounded-[50px] px-4 flex items-center justify-center gap-2 cursor-pointer"
+                onClick={() => setShowFilterMenu(!showFilterMenu)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#646464]">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#646464]">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+
+              {showFilterMenu && (
+                <div className="absolute top-[55px] left-0 w-[280px] bg-white shadow-lg rounded-lg p-4 z-10 border border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-3">Filtrar por:</p>
+
+                  {/* Filtro por gênero */}
+                  <div className="mb-4">
+                    <p className="text-xs font-medium text-gray-600 mb-2">Gênero:</p>
+                    <div className="flex gap-3">
+                      <button
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          filters.gender === 'male'
+                            ? 'bg-[#4d87fc] text-white'
+                            : 'bg-gray-100 text-gray-700'
+                        }`}
+                        onClick={() => setFilters({...filters, gender: filters.gender === 'male' ? '' : 'male'})}
+                      >
+                        Macho
+                      </button>
+                      <button
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          filters.gender === 'female'
+                            ? 'bg-[#ffa2df] text-white'
+                            : 'bg-gray-100 text-gray-700'
+                        }`}
+                        onClick={() => setFilters({...filters, gender: filters.gender === 'female' ? '' : 'female'})}
+                      >
+                        Fêmea
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Filtro por idade */}
+                  <div className="mb-4">
+                    <p className="text-xs font-medium text-gray-600 mb-2">Idade (anos):</p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="0"
+                        max={filters.ageMax}
+                        value={filters.ageMin}
+                        onChange={(e) => setFilters({...filters, ageMin: parseInt(e.target.value) || 0})}
+                        className="w-16 h-8 border border-gray-300 rounded px-2 text-sm"
+                      />
+                      <span className="text-xs text-gray-500">até</span>
+                      <input
+                        type="number"
+                        min={filters.ageMin}
+                        max="20"
+                        value={filters.ageMax}
+                        onChange={(e) => setFilters({...filters, ageMax: parseInt(e.target.value) || 0})}
+                        className="w-16 h-8 border border-gray-300 rounded px-2 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Filtro por espécie */}
+                  <div className="mb-4">
+                    <p className="text-xs font-medium text-gray-600 mb-2">Espécie:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {speciesList.map((species) => (
+                        <button
+                          key={species}
+                          className={`px-3 py-1 rounded-full text-xs ${
+                            filters.species === species
+                              ? 'bg-[#4d87fc] text-white'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}
+                          onClick={() => {
+                            // Se clicar na mesma espécie, limpa a seleção
+                            if (filters.species === species) {
+                              setFilters({...filters, species: '', breed: ''});
+                            } else {
+                              // Ao mudar de espécie, limpa a raça selecionada
+                              setFilters({...filters, species: species, breed: ''});
+                            }
+                          }}
+                        >
+                          {species}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Filtro por raça */}
+                  <div className="mb-4">
+                    <p className="text-xs font-medium text-gray-600 mb-2">Raça:</p>
+                    {filters.species ? (
+                      <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
+                        {breedsBySpecies[filters.species].map((breed) => (
+                          <button
+                            key={breed}
+                            className={`px-3 py-1 rounded-full text-xs ${
+                              filters.breed === breed
+                                ? 'bg-[#4d87fc] text-white'
+                                : 'bg-gray-100 text-gray-700'
+                            }`}
+                            onClick={() => {
+                              // Se clicar na mesma raça, limpa a seleção
+                              if (filters.breed === breed) {
+                                setFilters({...filters, breed: ''});
+                              } else {
+                                setFilters({...filters, breed: breed});
+                              }
+                            }}
+                          >
+                            {breed}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-500 italic">Selecione uma espécie primeiro</p>
+                    )}
+                  </div>
+
+                  {/* Botões de ação */}
+                  <div className="flex justify-between">
+                    <button
+                      className="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full"
+                      onClick={() => {
+                        setFilters({
+                          gender: "",
+                          ageMin: 0,
+                          ageMax: 20,
+                          species: "",
+                          breed: ""
+                        });
+                      }}
+                    >
+                      Limpar
+                    </button>
+                    <button
+                      className="px-3 py-1 bg-[#4d87fc] text-white text-sm font-medium rounded-full"
+                      onClick={() => setShowFilterMenu(false)}
+                    >
+                      Aplicar
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="w-[300px] h-[50px] border border-[#646464] rounded-[50px] px-4 flex items-center ml-auto">
               <input
                 type="text"
-                placeholder="Buscar por nome..."
+                placeholder="Pesquisar"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full h-full bg-transparent outline-none text-sm text-[#646464]"
               />
+              <button className="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#646464]">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
             </div>
           </div>
 
