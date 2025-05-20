@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useSession } from "next-auth/react";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 import { SocketContext } from "../services/SocketContext";
-import { Menu } from "../components";
+import { Menu, Loading } from "../components";
 import { getConversations, getMessages, getUserById } from "../services/api";
 
 const Chat = () => {
 
+    const router = useRouter();
     const { data: session, status } = useSession();
     const { socket } = useContext(SocketContext);
     const [conversations, setConversations] = useState([]);
@@ -13,99 +15,400 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [messageContent, setMessageContent] = useState("");
     const [users, setUsers] = useState({}); // Cache de informações dos usuários
+    const [loadingConversations, setLoadingConversations] = useState(true);
+    const [loadingMessages, setLoadingMessages] = useState(false);
+    const [sendingMessage, setSendingMessage] = useState(false);
+
+    // Estado para armazenar o histórico de mensagens da conversa de teste
+    const [testConversationHistory, setTestConversationHistory] = useState([]);
+
+    // Estado para controlar o índice do carrossel
+    const [carouselIndex, setCarouselIndex] = useState(0);
+
+    // Função para avançar o carrossel
+    const nextCarousel = () => {
+        setCarouselIndex(prev => (prev + 1) % 3); // 3 páginas no total
+    };
+
+    // Função para voltar o carrossel
+    const prevCarousel = () => {
+        setCarouselIndex(prev => (prev - 1 + 3) % 3); // 3 páginas no total
+    };
+    const messagesEndRef = useRef(null);
+
+    // Definir isAuthenticated antes de usá-lo nos useEffects
+    const isAuthenticated = typeof window !== 'undefined' && (status === "authenticated" || !!localStorage.getItem("token"));
+
+    // Função para rolar para o final das mensagens
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
 
     // Carregar conversas do usuário
     useEffect(() => {
-        if (status === "authenticated" && session?.user?.id) {
-            const fetchConversations = async () => {
-                try {
-                    const data = await getConversations();
-                    setConversations(data);
-
-                    // Buscar informações dos usuários das conversas
-                    const userIds = data.map((conv) => conv._id.toString());
-                    const userPromises = userIds.map((id) => getUserById(id));
-                    const userData = await Promise.all(userPromises);
-                    const userMap = userData.reduce((acc, user) => {
-                        acc[user._id] = user;
-                        return acc;
-                    }, {});
-                    setUsers(userMap);
-                } catch (error) {
-                    console.error("Erro ao carregar conversas:", error);
-                }
-            };
-            fetchConversations();
+        // Retornar cedo se não estiver autenticado
+        if (!isAuthenticated) {
+            return;
         }
-    }, [status, session]);
+
+        const fetchConversations = async () => {
+            setLoadingConversations(true);
+            try {
+                const data = await getConversations();
+                setConversations(data);
+
+                // Buscar informações dos usuários das conversas
+                const userIds = data.map((conv) => conv._id.toString());
+                const userPromises = userIds.map((id) => getUserById(id));
+                const userData = await Promise.all(userPromises);
+                const userMap = userData.reduce((acc, user) => {
+                    if (user && user._id) {
+                        acc[user._id] = user;
+                    }
+                    return acc;
+                }, {});
+                setUsers(userMap);
+
+                // Carregar o usuário e a conversa de teste para que apareçam na lista de contatos
+                console.log("Carregando usuário e conversa de teste...");
+                try {
+                    const response = await fetch('/api/test-conversation');
+
+                    if (!response.ok) {
+                        throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
+                    }
+
+                    const testData = await response.json();
+                    console.log("Dados de teste recebidos:", testData);
+
+                    // Verificar se testData e testData.user existem antes de acessar propriedades
+                    if (testData && testData.user && testData.user._id) {
+                        console.log("Adicionando usuário de teste:", testData.user);
+                        // Adicionar usuário de teste
+                        setUsers(prev => ({
+                            ...prev,
+                            [testData.user._id]: testData.user
+                        }));
+                    } else {
+                        console.error("Dados de usuário de teste inválidos:", testData);
+                    }
+
+                    // Verificar se testData.conversation existe antes de usá-lo
+                    if (testData && testData.conversation) {
+                        console.log("Adicionando conversa de teste:", testData.conversation);
+                        // Adicionar conversa de teste
+                        setConversations(prev => {
+                            // Verificar se a conversa já existe
+                            const conversationExists = prev.some(conv => conv._id === testData.conversation._id);
+                            if (!conversationExists) {
+                                return [...prev, testData.conversation];
+                            }
+                            return prev;
+                        });
+
+                        // Não selecionar automaticamente a conversa de teste
+                        // O usuário deve clicar no contato para carregar as mensagens
+                    } else {
+                        console.error("Dados de conversa de teste inválidos:", testData);
+                    }
+
+                    // Não carregar mensagens de teste automaticamente
+                    // As mensagens serão carregadas quando o usuário selecionar a conversa
+                } catch (error) {
+                    console.error("Erro ao carregar conversa de teste:", error);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar conversas:", error);
+            } finally {
+                setLoadingConversations(false);
+            }
+        };
+        fetchConversations();
+    }, [isAuthenticated]);
 
     // Carregar mensagens de uma conversa selecionada
     useEffect(() => {
-        if (selectedConversation && session?.user?.id) {
-            const fetchMessages = async () => {
-                try {
-                    const data = await getMessages(selectedConversation);
-                    setMessages(data);
-                } catch (error) {
-                    console.error("Erro ao carregar mensagens:", error);
-                }
-            };
-            fetchMessages();
+        // Não usar return dentro de condições para evitar hooks condicionais
+        // Isso garante que o mesmo número de hooks seja chamado em cada renderização
+        if (!selectedConversation || !isAuthenticated) {
+            return; // Retornar cedo se as condições não forem atendidas
         }
-    }, [selectedConversation, session]);
+
+        // Não carregar mensagens para a conversa de teste via API normal
+        // As mensagens de teste são carregadas na função selectConversation
+        if (selectedConversation === "test-user-123") {
+            // Para a conversa de teste, apenas rolar para o final se já tivermos mensagens
+            if (messages.length > 0) {
+                setTimeout(scrollToBottom, 100);
+            }
+            return;
+        }
+
+        // Para conversas normais, carregar mensagens da API
+        const fetchMessages = async () => {
+            setLoadingMessages(true);
+            try {
+                const data = await getMessages(selectedConversation);
+                setMessages(data);
+                // Rolar para o final das mensagens após carregá-las
+                setTimeout(scrollToBottom, 100);
+            } catch (error) {
+                console.error("Erro ao carregar mensagens:", error);
+            } finally {
+                setLoadingMessages(false);
+            }
+        };
+        fetchMessages();
+    }, [selectedConversation, isAuthenticated, messages.length]);
 
     // Receber mensagens em tempo real
     useEffect(() => {
-        if (socket && session?.user?.id) {
-            socket.emit("join", session.user.id);
-            socket.on("private_message", (message) => {
-                if (
-                    message.sender === selectedConversation ||
-                    message.receiver === selectedConversation
-                ) {
-                    setMessages((prev) => [...prev, message]);
-                }
-                // Atualizar lista de conversas
-                setConversations((prev) =>
-                    prev.map((conv) =>
-                        conv._id.toString() === message.sender ||
-                            conv._id.toString() === message.receiver
-                            ? { ...conv, lastMessageAt: message.timestamp }
-                            : conv
-                    )
-                );
-            });
-
-            return () => {
-                socket.off("private_message");
-            };
+        // Retornar cedo se as condições não forem atendidas
+        if (!socket || !isAuthenticated) {
+            return;
         }
-    }, [socket, selectedConversation, session]);
+
+        // Obter o ID do usuário do localStorage ou da sessão
+        const userId = session?.user?.id || (typeof window !== 'undefined' ? localStorage.getItem("userId") : null);
+
+        if (!userId) {
+            return;
+        }
+
+        socket.emit("join", userId);
+        socket.on("private_message", (message) => {
+            if (
+                message.sender === selectedConversation ||
+                message.receiver === selectedConversation
+            ) {
+                setMessages((prev) => [...prev, message]);
+                // Rolar para o final quando receber uma nova mensagem
+                setTimeout(scrollToBottom, 100);
+            }
+            // Atualizar lista de conversas
+            setConversations((prev) =>
+                prev.map((conv) =>
+                    conv._id.toString() === message.sender ||
+                        conv._id.toString() === message.receiver
+                        ? { ...conv, lastMessageAt: message.timestamp }
+                        : conv
+                )
+            );
+        });
+
+        return () => {
+            socket.off("private_message");
+        };
+    }, [socket, selectedConversation, isAuthenticated]);
 
     // Enviar mensagem
     const sendMessage = () => {
-        if (messageContent.trim() && socket && selectedConversation) {
-            socket.emit("private_message", {
-                sender: session.user.id,
-                receiver: selectedConversation,
-                content: messageContent,
-            });
-            setMessageContent("");
+        if (messageContent.trim() && selectedConversation) {
+            setSendingMessage(true);
+
+            // Obter o ID do usuário do localStorage ou da sessão
+            const userId = session?.user?.id || (typeof window !== 'undefined' ? localStorage.getItem("userId") : null) || "current-user";
+
+            // Verificar se é a conversa de teste
+            if (selectedConversation === "test-user-123") {
+                // Adicionar mensagem do usuário
+                const userMessage = {
+                    _id: `msg-${Date.now()}`,
+                    sender: userId,
+                    receiver: selectedConversation,
+                    content: messageContent,
+                    timestamp: new Date().toISOString(),
+                };
+
+                // Adicionar à lista de mensagens
+                setMessages(prev => {
+                    const newMessages = [...prev, userMessage];
+                    // Atualizar também o histórico de mensagens
+                    setTestConversationHistory(newMessages);
+                    return newMessages;
+                });
+
+                // Atualizar a hora da última mensagem na conversa
+                setConversations(prev =>
+                    prev.map(conv =>
+                        conv._id === "test-user-123"
+                            ? { ...conv, lastMessageAt: new Date().toISOString() }
+                            : conv
+                    )
+                );
+
+                // Simular resposta automática após 1 segundo
+                setTimeout(() => {
+                    // Escolher uma resposta com base no conteúdo da mensagem
+                    let responseContent = "Esta é uma resposta automática para teste. O chat está funcionando corretamente!";
+
+                    // Personalizar resposta com base no conteúdo da mensagem
+                    const lowerCaseMessage = messageContent.toLowerCase();
+                    if (lowerCaseMessage.includes("olá") || lowerCaseMessage.includes("oi") || lowerCaseMessage.includes("ola")) {
+                        responseContent = "Olá! Como posso ajudar você hoje?";
+                    } else if (lowerCaseMessage.includes("ajuda") || lowerCaseMessage.includes("help")) {
+                        responseContent = "Estou aqui para ajudar! Este é um chat de teste para demonstrar a funcionalidade do sistema.";
+                    } else if (lowerCaseMessage.includes("tchau") || lowerCaseMessage.includes("adeus")) {
+                        responseContent = "Até logo! Foi um prazer conversar com você.";
+                    } else if (lowerCaseMessage.includes("obrigado") || lowerCaseMessage.includes("obrigada")) {
+                        responseContent = "De nada! Estou sempre à disposição.";
+                    }
+
+                    const autoReply = {
+                        _id: `msg-${Date.now() + 1}`,
+                        sender: "test-user-123",
+                        receiver: userId,
+                        content: responseContent,
+                        timestamp: new Date().toISOString(),
+                    };
+
+                    // Adicionar resposta à lista de mensagens
+                    setMessages(prev => {
+                        const newMessages = [...prev, autoReply];
+                        // Atualizar também o histórico de mensagens
+                        setTestConversationHistory(newMessages);
+                        return newMessages;
+                    });
+
+                    // Atualizar a hora da última mensagem na conversa
+                    setConversations(prev =>
+                        prev.map(conv =>
+                            conv._id === "test-user-123"
+                                ? { ...conv, lastMessageAt: new Date().toISOString() }
+                                : conv
+                        )
+                    );
+
+                    // Rolar para o final
+                    setTimeout(scrollToBottom, 100);
+                }, 1000);
+
+                setMessageContent("");
+                setTimeout(scrollToBottom, 100);
+            } else if (socket && userId) {
+                // Enviar mensagem via socket para conversas reais
+                socket.emit("private_message", {
+                    sender: userId,
+                    receiver: selectedConversation,
+                    content: messageContent,
+                });
+                setMessageContent("");
+            } else {
+                console.error("ID do usuário não encontrado ou socket não disponível");
+                alert("Erro ao enviar mensagem: Verifique sua conexão");
+            }
+
+            setSendingMessage(false);
+        }
+    };
+
+    // Lidar com a tecla Enter para enviar mensagem
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
         }
     };
 
     // Selecionar uma conversa
-    const selectConversation = (userId) => {
+    const selectConversation = async (userId) => {
+        // Se já estiver selecionado, desselecionar (voltar para a tela inicial)
+        if (selectedConversation === userId) {
+            setSelectedConversation(null);
+            setMessages([]);
+            return;
+        }
+
+        // Caso contrário, selecionar a nova conversa
         setSelectedConversation(userId);
-        setMessages([]);
+
+        // Se for a conversa de teste, carregar mensagens de teste
+        if (userId === "test-user-123") {
+            try {
+                console.log("Carregando conversa de teste...");
+                setLoadingMessages(true);
+
+                // Verificar se já temos histórico de mensagens
+                if (testConversationHistory.length > 0) {
+                    console.log("Usando histórico de mensagens existente:", testConversationHistory);
+                    setMessages(testConversationHistory);
+                    setTimeout(scrollToBottom, 100);
+                    setLoadingMessages(false);
+                    return;
+                }
+
+                // Se não temos histórico, carregar as mensagens iniciais da API
+                const response = await fetch('/api/test-conversation');
+
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
+                }
+
+                const testData = await response.json();
+                console.log("Dados de teste recebidos:", testData);
+
+                // Verificar se testData.messages existe antes de usá-lo
+                if (testData && testData.messages) {
+                    console.log("Carregando mensagens de teste:", testData.messages);
+                    // Carregar mensagens de teste
+                    setMessages(testData.messages);
+                    // Salvar no histórico
+                    setTestConversationHistory(testData.messages);
+                    // Rolar para o final das mensagens após carregá-las
+                    setTimeout(scrollToBottom, 100);
+                } else {
+                    console.error("Dados de mensagens de teste inválidos:", testData);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar mensagens de teste:", error);
+            } finally {
+                setLoadingMessages(false);
+            }
+        } else {
+            // Para outras conversas, limpar as mensagens
+            setMessages([]);
+        }
     };
 
+    // Verificar se o token está disponível no localStorage
+    // Este useEffect sempre será executado, independentemente de condições
+    useEffect(() => {
+        // Verificação de window movida para dentro do useEffect
+        // Isso garante que o mesmo número de hooks seja chamado em cada renderização
+        if (typeof window !== 'undefined') {
+            const token = localStorage.getItem("token");
+            console.log("Token disponível:", !!token);
+            console.log("Status da sessão:", status);
+
+            if (status !== "authenticated" && !token) {
+                // Se não estiver autenticado e não tiver token, redirecionar para login
+                router.push('/login');
+            }
+        }
+    }, [status, router]);
+
     if (status === "loading") {
-        return <div>Carregando...</div>;
+        return (
+            <div className="w-screen h-screen flex justify-center items-center">
+                <Loading size="large" />
+            </div>
+        );
     }
 
-    if (status !== "authenticated") {
-        return <div>Por favor, faça login para acessar o chat.</div>;
+    if (!isAuthenticated && status !== "loading") {
+        return (
+            <div className="w-screen h-screen flex justify-center items-center">
+                <div className="bg-white p-8 rounded-lg shadow-md">
+                    <p className="text-xl text-center mb-4">Por favor, faça login para acessar o chat.</p>
+                    <button
+                        onClick={() => router.push('/login')}
+                        className="bg-[#4d87fc] text-white px-4 py-2 rounded-md hover:bg-[#3a6fd9] transition-colors"
+                    >
+                        Ir para o login
+                    </button>
+                </div>
+            </div>
+        );
     }
 
 
@@ -134,34 +437,130 @@ const Chat = () => {
                             <p className="text-xl font-semibold text-left text-black">
                                 Online
                             </p>
-                            <div id='itens' className="flex justify-start items-center gap-1">
-                                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                            <div id='itens' className="flex justify-between items-center w-full">
+                                <button
+                                    onClick={prevCarousel}
+                                    className="w-6 h-6 rounded-full bg-white flex items-center justify-center"
+                                >
+                                    <span className="text-gray-600">&lt;</span>
+                                </button>
 
-                                </div>
-                                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                <div className="flex justify-center items-center gap-1 overflow-hidden">
+                                    {/* Página 1 do carrossel */}
+                                    {carouselIndex === 0 && (
+                                        <>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 48.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 49.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 50.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 51.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 53.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </>
+                                    )}
 
-                                </div>
-                                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                    {/* Página 2 do carrossel */}
+                                    {carouselIndex === 1 && (
+                                        <>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 48.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 49.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 50.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 51.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 53.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </>
+                                    )}
 
+                                    {/* Página 3 do carrossel */}
+                                    {carouselIndex === 2 && (
+                                        <>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 48.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 49.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 50.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 51.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
+                                                <img
+                                                    src="Frame 53.png"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
-                                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
 
-                                </div>
-                                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-
-                                </div>
-                                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-
-                                </div>
-                                <div className="flex justify-center items-center w-10 h-10 rounded-full bg-slate-600">
-
-                                </div>
-                                <div className="flex justify-center items-center w-6 h-6 rounded-full bg-white">
-                                    <img
-                                        src="down-chevron.png"
-                                        className="w-5 h-5 object-cover"
-                                    />
-                                </div>
+                                <button
+                                    onClick={nextCarousel}
+                                    className="w-6 h-6 rounded-full bg-white flex items-center justify-center"
+                                >
+                                    <span className="text-gray-600">&gt;</span>
+                                </button>
                             </div>
                         </div>
 
@@ -169,75 +568,125 @@ const Chat = () => {
                             <p className="text-xl font-semibold text-left text-black">
                                 Mensagens
                             </p>
-                            <div id='contatos' className="flex flex-col justify-start items-start gap-1">
-                                {conversations.map((conv) => (
-                                    <div
-                                        key={conv._id}
-                                        onClick={() => selectConversation(conv._id.toString())}
-                                        className={`flex justify-start items-center h-fit relative gap-4 px-1 py-3 rounded-lg cursor-pointer ${selectedConversation === conv._id.toString() ? "bg-gray-200" : ""
-                                            }`}
-                                    >
-                                        <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                                        <div className="flex justify-start items-center gap-2 flex-wrap">
-                                            <p className="text-base font-medium text-left text-[#1e1e1e]">
-                                                {users[conv._id]?.username || "Usuário"}
-                                            </p>
-                                            <p className="text-sm font-light text-left text-[#646464]">
-                                                {conv.lastMessageAt
-                                                    ? new Date(conv.lastMessageAt).toLocaleTimeString()
-                                                    : ""}
-                                            </p>
-                                        </div>
+
+
+
+                            <div id='contatos' className="flex flex-col justify-start items-start gap-1 w-full">
+                                {loadingConversations ? (
+                                    <div className="py-4 flex justify-center w-full">
+                                        <Loading size="medium" />
                                     </div>
-                                ))}
+                                ) : conversations.length === 0 ? (
+                                    <div className="py-4 text-center w-full text-gray-500">
+                                        Nenhuma conversa encontrada
+                                    </div>
+                                ) : (
+                                    conversations.map((conv) => (
+                                        <div
+                                            key={conv._id}
+                                            onClick={() => selectConversation(conv._id.toString())}
+                                            className={`flex justify-start items-center h-fit relative gap-4 px-3 py-3 rounded-lg cursor-pointer w-full hover:bg-gray-100 transition-colors ${selectedConversation === conv._id.toString() ? "bg-gray-200" : ""
+                                                }`}
+                                        >
+                                            <div className="w-10 h-10 rounded-full bg-slate-600 flex items-center justify-center text-white font-bold">
+                                                {users[conv._id]?.username?.charAt(0).toUpperCase() || "U"}
+                                            </div>
+                                            <div className="flex flex-col justify-start items-start">
+                                                <p className="text-base font-medium text-left text-[#1e1e1e]">
+                                                    {users[conv._id]?.username || "Usuário"}
+                                                </p>
+                                                <p className="text-sm font-light text-left text-[#646464]">
+                                                    {conv.lastMessageAt
+                                                        ? new Date(conv.lastMessageAt).toLocaleTimeString()
+                                                        : "Sem mensagens"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-center items-center bg-white w-full h-full" style={{ boxShadow: "5px 0px 20px -15px rgba(0,0,0,0.25)" }}>
+                    <div className="flex flex-col justify-between bg-white w-full h-full" style={{ boxShadow: "5px 0px 20px -15px rgba(0,0,0,0.25)" }}>
                         {selectedConversation ? (
                             <>
-                                <div className="flex-1 overflow-y-auto">
-                                    {messages.map((msg, index) => (
-                                        <div
-                                            key={index}
-                                            className={`mb-2 p-2 rounded-lg ${msg.sender === session.user.id
-                                                ? "bg-blue-100 ml-auto"
-                                                : "bg-gray-100"
-                                                } max-w-[70%]`}
-                                        >
-                                            <p className="text-sm">{msg.content}</p>
-                                            <p className="text-xs text-gray-500">
-                                                {new Date(msg.timestamp).toLocaleTimeString()}
-                                            </p>
-                                        </div>
-                                    ))}
+                                {/* Cabeçalho da conversa */}
+                                <div className="p-4 border-b flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-slate-600 flex items-center justify-center text-white font-bold">
+                                        {users[selectedConversation]?.username?.charAt(0).toUpperCase() || "U"}
+                                    </div>
+                                    <div>
+                                        <p className="font-medium">{users[selectedConversation]?.username || "Usuário"}</p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
+
+                                {/* Área de mensagens */}
+                                <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+                                    {loadingMessages ? (
+                                        <div className="flex justify-center items-center h-full">
+                                            <Loading size="medium" />
+                                        </div>
+                                    ) : messages.length === 0 ? (
+                                        <div className="flex justify-center items-center h-full text-gray-500">
+                                            Nenhuma mensagem encontrada. Comece a conversar!
+                                        </div>
+                                    ) : (
+                                        messages.map((msg, index) => (
+                                            <div
+                                                key={index}
+                                                className={`flex ${msg.sender === (session?.user?.id || (typeof window !== 'undefined' ? localStorage.getItem("userId") : null)) ? 'justify-end' : 'justify-start'}`}
+                                            >
+                                                <div
+                                                    className={`p-3 rounded-lg max-w-[70%] ${
+                                                        msg.sender === (session?.user?.id || (typeof window !== 'undefined' ? localStorage.getItem("userId") : null))
+                                                            ? "bg-[#4d87fc] text-white"
+                                                            : "bg-gray-100"
+                                                    }`}
+                                                >
+                                                    <p className="text-sm">{msg.content}</p>
+                                                    <p className={`text-xs mt-1 ${msg.sender === (session?.user?.id || (typeof window !== 'undefined' ? localStorage.getItem("userId") : null)) ? 'text-gray-200' : 'text-gray-500'}`}>
+                                                        {new Date(msg.timestamp).toLocaleTimeString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                    {/* Referência para rolar para o final */}
+                                    <div ref={messagesEndRef} />
+                                </div>
+
+                                {/* Área de input */}
+                                <div className="p-4 border-t flex items-center gap-2">
                                     <input
                                         type="text"
                                         value={messageContent}
                                         onChange={(e) => setMessageContent(e.target.value)}
-                                        className="flex-1 border p-2 rounded"
-                                        placeholder="Digite sua mensagem"
+                                        onKeyPress={handleKeyPress}
+                                        className="flex-1 border p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4d87fc]"
+                                        placeholder="Digite sua mensagem..."
                                     />
                                     <button
                                         onClick={sendMessage}
-                                        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                                        disabled={sendingMessage || !messageContent.trim()}
+                                        className={`bg-[#4d87fc] text-white p-3 rounded-full hover:bg-[#3a6fd9] transition-colors ${
+                                            sendingMessage || !messageContent.trim() ? 'opacity-50 cursor-not-allowed' : ''
+                                        }`}
                                     >
-                                        Enviar
+                                        {sendingMessage ? <Loading size="small" color="#ffffff" /> : 'Enviar'}
                                     </button>
                                 </div>
                             </>
                         ) : (
+                            <div className="flex flex-col justify-center items-center h-full">
                             <svg
-                                width={500}
-                                height={500}
+                                width={300}
+                                height={300}
                                 viewBox="0 0 776 776"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="flex-grow-0 flex-shrink-0 w-96 h-96 relative"
-                                preserveAspectRatio="none"
-                            >
+                                className="flex-grow-0 flex-shrink-0 w-64 h-64 relative opacity-70"
+                                preserveAspectRatio="none">
+
                                 <path d="M776 593.485H0V593.873H776V593.485Z" fill="#EBEBEB" />
                                 <path d="M698.245 618.456H646.843V618.844H698.245V618.456Z" fill="#EBEBEB" />
                                 <path d="M514.053 622.678H500.567V623.066H514.053V622.678Z" fill="#EBEBEB" />
@@ -961,6 +1410,8 @@ const Chat = () => {
                                     fill="white"
                                 />
                             </svg>
+                                <p className="text-xl text-gray-500 mt-6">Selecione uma conversa para começar a enviar mensagens</p>
+                            </div>
                         )}
 
 

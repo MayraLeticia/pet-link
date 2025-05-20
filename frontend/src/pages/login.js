@@ -29,22 +29,22 @@ const Login = () => {
 
     <div id="login" className="w-screen h-screen flex flex-row justify-center items-center">
       <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2">
-        <div className="flex-grow-0 flex-shrink-0">
+        <div className="absolute top-1 left-1 justify-center items-center gap-2 flex-row flex">
           <img
             src="/Logo.png"
-            className="w-10 h-10 absolute left-[9.5px] top-[14.5px] object-cover"
+            className="w-16 h-16 object-cover"
           />
-          <p className="absolute left-[77px] top-6 text-[32px] font-semibold text-left text-[#4d87fc]">
+          <p className="text-3xl font-semibold text-left text-[#4d87fc]">
             Pet Link
           </p>
         </div>
         <div id="init" className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-12">
           <img src='/image.svg' alt="bichinhos" className="w-96 h-96" />
-          <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-6">
-            <p className="self-stretch flex-grow-0 flex-shrink-0 text-3xl font-bold text-center text-[#212334]">
+          <div className="flex flex-col justify-start items-center gap-6">
+            <p className="text-3xl font-bold text-center text-[#212334]">
               O seu bichinho tambêm merece amor.
             </p>
-            <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
+            <p className="text-xl text-center text-[#585b7a]">
               Entre agora pra nossa turma!
             </p>
           </div>

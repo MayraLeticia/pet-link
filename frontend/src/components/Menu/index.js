@@ -14,9 +14,9 @@ const Menu = () => {
                 <div className="flex justify-start items-center relative cursor-pointer" onClick={() => {router.push(`/home`)}}>
                     <img
                         src="/Logo.png"
-                        className="w-[67px] h-[67px] object-cover"
+                        className="w-16 h-16 object-cover"
                     />
-                    <p className="text-[32px] font-semibold text-left text-[#4d87fc] cursor-pointer">
+                    <p className="text-3xl font-semibold text-left text-[#4d87fc] cursor-pointer">
                         Pet Link
                     </p>
                 </div>

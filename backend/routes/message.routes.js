@@ -3,12 +3,13 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Message = require('../models/messageSchema');
 const { decrypt } = require('../utils/encrypt');
+const ChatController = require('../controller/chatController')
 const { verifyToken } = require('../utils/verifyToken');
 
 // Buscar últimas conversas de um usuário
 router.get('/conversations', verifyToken, async (req, res) => {
     const userId = req.user.id;
-    
+
     try {
         const objectId = new mongoose.Types.ObjectId(userId);
 
@@ -51,11 +52,11 @@ router.get('/conversations', verifyToken, async (req, res) => {
 
 // Buscar histórico de mensagens entre dois usuários
 router.get('/:contactId', verifyToken, async (req, res) => {
-    
+
     try {
         const userId = req.user.id; // vem do JWT validado
         const contactId = req.params.contactId;
-      
+
         const messages = await Message.find({
           $or: [
             { sender: userId, receiver: contactId },
@@ -66,7 +67,7 @@ router.get('/:contactId', verifyToken, async (req, res) => {
         const decryptedMessages = messages.map(msg => ({
             ...msg.toObject(),
             content: decrypt(msg.content)
-        
+
         }));
 
         res.status(200).json(decryptedMessages);
@@ -76,5 +77,8 @@ router.get('/:contactId', verifyToken, async (req, res) => {
         res.status(500).json({ error: 'Erro ao buscar mensagens.' });
     }
 });
+// Rota para obter conversas usando o controlador
+// Nota: Esta rota não está sendo usada atualmente, pois já temos a rota /conversations acima
+// router.get('/user/:id', verifyToken, new ChatController().getConversations);
 
 module.exports = router;
