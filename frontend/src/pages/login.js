@@ -12,6 +12,7 @@ const Login = () => {
   const router = useRouter(); // Hook para navegação
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -95,14 +96,28 @@ const Login = () => {
           </p>
         </div>
         <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
-          <Input placeholder="E-mail" width="w-full" onChange={(e) => setEmail(e.target.value)} />
-          <Input placeholder="Senha" width="w-full" onChange={(e) => setPassword(e.target.value)} />
+          <Input
+            placeholder="E-mail"
+            type="email"
+            width="w-full"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Input
+            placeholder="Senha"
+            type={showPassword ? "text" : "password"}
+            width="w-full"
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
         <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-[220px]">
           <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
             <a onClick={() => router.push('/forgot-password')} className="hover:text-[#4d87fc] transition-colors">Esqueceu a senha?</a>
           </p>
-          <Checkbox nome="Mostrar senha" />
+          <Checkbox
+            nome="Mostrar senha"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
         </div>
         <Button
           type="submit"
