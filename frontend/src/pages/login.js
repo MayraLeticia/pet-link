@@ -100,7 +100,7 @@ const Login = () => {
         </div>
         <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-[220px]">
           <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
-            <a>Esqueceu a senha?</a>
+            <a onClick={() => router.push('/forgot-password')} className="hover:text-[#4d87fc] transition-colors">Esqueceu a senha?</a>
           </p>
           <Checkbox nome="Mostrar senha" />
         </div>
