@@ -28,9 +28,9 @@ const Login = () => {
 
   return (
 
-    <div id="login" className="w-screen h-screen flex flex-row justify-center items-center">
-      <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2">
-        <div className="absolute top-1 left-1 justify-center items-center gap-2 flex-row flex">
+    <div id="login" className="w-screen h-screen flex flex-row justify-center items-center auth-container">
+      <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2 auth-left-side">
+        <div className="absolute top-1 left-1 justify-center items-center gap-2 flex-row flex auth-logo">
           <img
             src="/Logo.png"
             className="w-16 h-16 object-cover"
@@ -40,24 +40,23 @@ const Login = () => {
           </p>
         </div>
         <div id="init" className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-12">
-          <img src='/image.svg' alt="bichinhos" className="w-96 h-96" />
+          <img src='/image.svg' alt="bichinhos" className="auth-image" />
           <div className="flex flex-col justify-start items-center gap-6">
-            <p className="text-3xl font-bold text-center text-[#212334]">
+            <p className="text-3xl font-bold text-center text-[#212334] auth-title">
               O seu bichinho tambêm merece amor.
             </p>
-            <p className="text-xl text-center text-[#585b7a]">
+            <p className="text-xl text-center text-[#585b7a] auth-subtitle">
               Entre agora pra nossa turma!
             </p>
           </div>
-
-
         </div>
       </div>
 
-      <form onSubmit={handleLogin} id="right-side" className="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-6 h-screen w-1/2 py-7 px-28">
-        <div id="mensage" className="flex flex-col justify-start items-center gap-4">
-          <div className=" flex justify-center items-center flex-row flex-grow-0 flex-shrink-0 ">
-            <p className="text-4xl font-bold text-center text-[#212334]">
+      <div id="right-side" className="flex flex-col justify-center items-center h-screen w-1/2 px-2">
+        <form onSubmit={handleLogin} className="flex flex-col justify-center items-center gap-4 w-full auth-form-container">
+        <div id="mensage" className="flex flex-col justify-start items-center gap-2">
+          <div className="flex justify-center items-center flex-row flex-grow-0 flex-shrink-0">
+            <p className="text-4xl font-bold text-center text-[#212334] auth-title">
               Olá de novo!
             </p>
             <svg
@@ -91,11 +90,11 @@ const Login = () => {
               ></path>
             </svg>
           </div>
-          <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
+          <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a] auth-subtitle">
             Bem-vindo de volta á plataforma, entre e divirta-se!
           </p>
         </div>
-        <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
+        <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-3">
           <Input
             placeholder="E-mail"
             type="email"
@@ -109,7 +108,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-[220px]">
+        <div id="settings" className="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative auth-settings">
           <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
             <a onClick={() => router.push('/forgot-password')} className="hover:text-[#4d87fc] transition-colors">Esqueceu a senha?</a>
           </p>
@@ -123,19 +122,19 @@ const Login = () => {
           type="submit"
           name="Entrar"
           width="w-full"
-          heigth="h-16"
+          heigth="h-14"
           color="bg-[#ffa2df]"
           border="border-[#fc7bcf]"
           className="hover:bg-[#fc7bcf]"
         />
-        <div className="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 ">
+        <div className="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 w-full">
           <svg
             width="241"
             height="3"
             viewBox="0 0 241 3"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className=""
+            className="auth-divider"
             preserveAspectRatio="none"
           >
             <path
@@ -146,7 +145,7 @@ const Login = () => {
             >
             </path>
           </svg>
-          <p className="ml-2 mr-2 text-sm font-light text-left text-[#646464]">
+          <p className="mx-4 text-sm font-light text-center text-[#646464]">
             ou
           </p>
           <svg
@@ -155,7 +154,7 @@ const Login = () => {
             viewBox="0 0 241 3"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className=""
+            className="auth-divider"
             preserveAspectRatio="none"
           >
             <path
@@ -167,33 +166,33 @@ const Login = () => {
             </path>
           </svg>
         </div>
-        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
+        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-8 auth-social-buttons">
           <Button
             icon='/icons/Google.png'
             onClick={() => signIn("google")}
-            width="w-[75px]"
-            height="h-[75px]"
+            width="w-[70px]"
+            height="h-[70px]"
             color="bg-[#e8f0fe]"
             border="border-[#d6ddea]"
           />
           <Button
             icon='/icons/Meta.png'
             onClick={() => signIn('facebook')}
-            width="w-[75px]"
-            height="h-[75px]"
+            width="w-[70px]"
+            height="h-[70px]"
             color="bg-[#e8f0fe]"
             border="border-[#d6ddea]"
           />
         </div>
         <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-1">
-          <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464]">
+          <p className="flex-grow-0 flex-shrink-0 text-base font-light text-center text-[#646464]">
             Não possui uma conta?
           </p>
-          <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#407bff] cursor-pointer">
+          <p className="flex-grow-0 flex-shrink-0 text-base font-light text-center text-[#407bff] cursor-pointer">
             <a onClick={() => {
-              router.push(`/register`); // Altere para a rota desejada
+              router.push(`/register`);
             }}
-            >
+            className="hover:underline">
               Registre-se</a>
           </p>
         </div>
@@ -202,7 +201,7 @@ const Login = () => {
 
 
       </form>
-
+      </div>
     </div>
   );
 }
