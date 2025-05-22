@@ -100,11 +100,11 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center bg-gray-50">
+    <div className="w-screen h-screen flex justify-center items-center bg-custom-gradient p-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-[#4d87fc]">Redefinir Senha</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-2xl font-semibold text-[#4d87fc] auth-title">Redefinir Senha</h1>
+          <p className="text-gray-600 mt-2 auth-subtitle">
             {tokenValid
               ? 'Crie uma nova senha para sua conta.'
               : 'O link de redefinição de senha é inválido ou expirou.'}

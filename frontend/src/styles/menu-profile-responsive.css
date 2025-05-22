@@ -1,0 +1,183 @@
+/* Estilos responsivos para o Menu e a página de perfil */
+
+/* Estilos base para o Menu */
+.menu-container {
+  transition: all 0.3s ease;
+}
+
+/* Estilos base para a área de descrição do pet */
+.description-field {
+  display: block;
+  min-height: 150px;
+  margin-bottom: 1rem;
+  height: auto !important;
+  overflow-y: auto;
+}
+
+/* Estilos para telas grandes (acima de 1200px) */
+@media (min-width: 1200px) {
+  .menu-sidebar {
+    width: 25%;
+  }
+
+  .profile-content {
+    width: 80%;
+    padding-left: 2rem;
+  }
+}
+
+/* Estilos para telas médias (992px a 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .menu-sidebar {
+    width: 30%;
+  }
+
+  .profile-content {
+    width: 75%;
+    padding-left: 1.5rem;
+  }
+
+  .profile-pet-data {
+    flex-direction: row;
+  }
+}
+
+/* Estilos para tablets (768px a 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .menu-sidebar {
+    width: 30%;
+  }
+
+  .profile-content {
+    width: 70%;
+    padding-left: 1rem;
+  }
+
+  .profile-section {
+    flex-direction: column;
+  }
+
+  .profile-pet-data {
+    flex-direction: row;
+  }
+
+  .profile-form-field {
+    width: 100% !important;
+  }
+
+  .description-field {
+    min-height: 150px;
+    display: block !important;
+    margin-top: 1rem;
+  }
+}
+
+/* Estilos para dispositivos móveis (abaixo de 768px) */
+@media (max-width: 767px) {
+  .menu-desktop {
+    display: none !important;
+  }
+
+  .menu-mobile {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: white;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    padding: 0.5rem;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .menu-mobile-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .menu-mobile-item img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .menu-mobile-item p {
+    font-size: 0.75rem;
+  }
+
+  .profile-container {
+    padding-bottom: 80px;
+  }
+
+  .profile-content {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .profile-section {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .profile-tutor-data,
+  .profile-pet-data {
+    width: 100%;
+  }
+
+  .pet-data-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .profile-form-field {
+    width: 100% !important;
+  }
+
+  .description-field {
+    min-height: 150px;
+    height: auto !important;
+    display: block !important;
+    margin-top: 1rem;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-y: auto;
+  }
+
+  .profile-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .profile-button {
+    width: 100% !important;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Estilos para dispositivos muito pequenos (abaixo de 576px) */
+@media (max-width: 576px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-title {
+    font-size: 1.5rem;
+  }
+
+  .profile-welcome {
+    font-size: 0.875rem;
+  }
+
+  .description-field {
+    min-height: 120px !important;
+    margin-top: 0.5rem !important;
+    padding: 0.5rem !important;
+  }
+}

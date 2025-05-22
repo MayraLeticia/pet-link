@@ -5,6 +5,8 @@ import { SessionProvider } from "next-auth/react";
 import { SocketProvider } from "../services/SocketContext";
 import "../styles/globals.css";
 import "../styles/auth-responsive.css";
+import "../styles/menu-profile-responsive.css";
+import "../styles/profile-zoom.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
