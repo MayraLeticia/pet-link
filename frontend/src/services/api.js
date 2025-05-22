@@ -28,7 +28,9 @@ api.interceptors.request.use(
 // Função para login do usuário
 export const loginUser = async (email, password) => {
   try {
+    console.log("Tentando fazer login com:", { email });
     const response = await api.post("/user/login", { email, password });
+    console.log("Resposta do login:", response.data);
 
     if (typeof window !== 'undefined') {
       // Salvar token e ID do usuário no localStorage
@@ -65,6 +67,27 @@ export const cadastrarPet = async (petData) => {
     return response.data; // Retorna os dados do pet cadastrado
   } catch (error) {
     console.error("Erro ao cadastrar pet:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Função para excluir um pet
+export const deletarPet = async (petId) => {
+  try {
+    let token = null;
+    if (typeof window !== 'undefined') {
+      token = localStorage.getItem("token");
+    }
+
+    const response = await api.delete(`/pet/${petId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao excluir pet:", error.response?.data || error.message);
     throw error;
   }
 };

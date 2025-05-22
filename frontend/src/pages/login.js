@@ -17,11 +17,27 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      console.log("Iniciando login com:", email);
       await loginUser(email, password);
+      console.log("Login bem-sucedido");
       alert('Login realizado com sucesso!');
       router.push('/profile');
     } catch (error) {
-      alert(error.response?.data || "Erro ao fazer login"); // Exibir erro retornado pelo backend
+      console.error("Erro detalhado:", error);
+      let errorMessage = "Erro ao fazer login";
+
+      if (error.response) {
+        // Se o erro tem uma resposta do servidor
+        if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        } else if (error.response.data && error.response.data.message) {
+          errorMessage = error.response.data.message;
+        }
+        console.error("Status do erro:", error.response.status);
+        console.error("Dados do erro:", error.response.data);
+      }
+
+      alert(errorMessage);
     }
   };
 
