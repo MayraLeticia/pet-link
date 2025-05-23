@@ -3,12 +3,16 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import api from "../services/api";
+import { usePetContext } from "../contexts/PetContext";
 
 import { Card, Menu } from "../components";
 
 const Home = () => {
   const [pets, setPets] = useState([]);
-  const [selectedPet, setSelectedPet] = useState(null);
+  const [selectedPetForDetails, setSelectedPetForDetails] = useState(null);
+
+  // Usar o contexto para obter o pet selecionado no menu
+  const { selectedPet: selectedPetFromMenu } = usePetContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [showRadiusMenu, setShowRadiusMenu] = useState(false);
   const [selectedRadius, setSelectedRadius] = useState(10); // Valor padrão: 10km
@@ -37,6 +41,9 @@ const Home = () => {
   };
 
   const filteredPets = pets.filter((pet) => {
+    // Excluir o pet selecionado no menu (o próprio pet do usuário)
+    const isNotOwnPet = !selectedPetFromMenu || pet._id !== selectedPetFromMenu._id;
+
     // Filtro por termo de busca
     const matchesSearch = pet.name.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -55,7 +62,7 @@ const Home = () => {
     const matchesBreed = !filters.breed ||
       (pet.race && pet.race.toLowerCase() === filters.breed.toLowerCase());
 
-    return matchesSearch && matchesGender && matchesAge && matchesSpecies && matchesBreed;
+    return isNotOwnPet && matchesSearch && matchesGender && matchesAge && matchesSpecies && matchesBreed;
   });
 
   useEffect(() => {
@@ -340,7 +347,7 @@ const Home = () => {
             {filteredPets.map((pet) => (
               <div
                 key={pet._id}
-                onClick={() => setSelectedPet(pet)}
+                onClick={() => setSelectedPetForDetails(pet)}
                 className="relative w-full max-w-[260px] aspect-[4/5] rounded-[15px] bg-gradient-to-br from-pink-200 to-purple-200 p-4 shadow-md cursor-pointer flex flex-col justify-between"
               >
                 <div className="absolute top-2 right-2 flex gap-2">
@@ -376,38 +383,38 @@ const Home = () => {
         </div>
 
         {/* Painel lateral com detalhes do pet */}
-        {selectedPet && (
+        {selectedPetForDetails && (
           <div
             id="details-panel"
             className={`w-1/3 bg-custom-gradient p-4 transition-transform duration-300 ${
-              selectedPet ? "translate-x-0" : "translate-x-full"
+              selectedPetForDetails ? "translate-x-0" : "translate-x-full"
             }`}
           >
             <button
-              onClick={() => setSelectedPet(null)}
+              onClick={() => setSelectedPetForDetails(null)}
               className="absolute top-6 right-4"
             >
               <img src="icons/Cancel.png" className="w-4 h-4 object-cover" />
             </button>
             <h2 className="text-2xl font-bold text-gray-700">
-              {selectedPet.name}
+              {selectedPetForDetails.name}
             </h2>
             <p className="text-gray-700">
-              Localização: {selectedPet.location}
+              Localização: {selectedPetForDetails.location}
             </p>
             <img
-              src={selectedPet.imgAnimal?.[0]?.url || "placeholder.jpg"}
-              alt={selectedPet.name}
+              src={selectedPetForDetails.imgAnimal?.[0]?.url || "placeholder.jpg"}
+              alt={selectedPetForDetails.name}
               className="w-full h-64 object-cover rounded-lg mt-4"
             />
-            <p className="text-gray-700 mt-4">{selectedPet.description}</p>
-            <p className="text-gray-700">Idade: {selectedPet.age}</p>
-            <p className="text-gray-700">Raça: {selectedPet.race}</p>
-            <p className="text-gray-700">Espécie: {selectedPet.specie}</p>
+            <p className="text-gray-700 mt-4">{selectedPetForDetails.description}</p>
+            <p className="text-gray-700">Idade: {selectedPetForDetails.age}</p>
+            <p className="text-gray-700">Raça: {selectedPetForDetails.race}</p>
+            <p className="text-gray-700">Espécie: {selectedPetForDetails.specie}</p>
 
             {/* Botão "Não tenho interesse" */}
             <button
-              onClick={() => setSelectedPet(null)}
+              onClick={() => setSelectedPetForDetails(null)}
               className="mt-4 px-4 py-2 bg-[#ff6b81] hover:bg-[#ff4c64] text-white text-sm font-medium rounded-full shadow-md transition duration-200"
             >
               Não tenho interesse

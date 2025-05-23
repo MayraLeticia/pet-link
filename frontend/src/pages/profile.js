@@ -5,12 +5,14 @@ import { useRouter } from 'next/router';
 import api from '../services/api';
 import { deletarPet } from '../services/api';
 import { Menu, PetRegister } from "../components";
+import { usePetContext } from '../contexts/PetContext';
 
 const Profile = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [pets, setPets] = useState([]);
-  const [selectedPet, setSelectedPet] = useState(null);
+
+  // Usar o contexto de pets
+  const { pets, selectedPet, selectPet, updatePet, removePet, fetchUserPets } = usePetContext();
 
   // Estados para edição
   const [editingUser, setEditingUser] = useState(false);
@@ -33,9 +35,9 @@ const Profile = () => {
   const [petForm, setPetForm] = useState({
     name: '',
     age: '',
-    species: '',
-    height: '',
-    breed: '',
+    specie: '',
+    size: '',
+    race: '',
     weight: '',
     description: ''
   });
@@ -62,7 +64,7 @@ const Profile = () => {
   };
 
   // Função para atualizar dados do pet
-  const updatePet = async () => {
+  const updatePetData = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token || !selectedPet?._id) return;
@@ -73,13 +75,8 @@ const Profile = () => {
         }
       });
 
-      // Atualiza o pet na lista
-      const updatedPets = pets.map(pet =>
-        pet._id === selectedPet._id ? response.data : pet
-      );
-
-      setPets(updatedPets);
-      setSelectedPet(response.data);
+      // Atualiza o pet usando o contexto
+      updatePet(response.data);
       setEditingPet(false);
       alert('Dados do pet atualizados com sucesso!');
     } catch (error) {
@@ -102,9 +99,9 @@ const Profile = () => {
     setPetForm({
       name: selectedPet?.name || '',
       age: selectedPet?.age || '',
-      species: selectedPet?.species || '',
-      height: selectedPet?.height || '',
-      breed: selectedPet?.breed || '',
+      specie: selectedPet?.specie || '',
+      size: selectedPet?.size || '',
+      race: selectedPet?.race || '',
       weight: selectedPet?.weight || '',
       description: selectedPet?.description || ''
     });
@@ -200,10 +197,8 @@ const Profile = () => {
       // Enviar requisição para excluir o pet usando a função importada
       await deletarPet(selectedPet._id);
 
-      // Atualizar a lista de pets
-      const updatedPets = pets.filter(pet => pet._id !== selectedPet._id);
-      setPets(updatedPets);
-      setSelectedPet(null);
+      // Atualizar a lista de pets usando o contexto
+      removePet(selectedPet._id);
       setConfirmDeletePet(false);
 
       alert('Pet excluído com sucesso!');
@@ -263,24 +258,10 @@ const Profile = () => {
 
         setUser(userResponse.data);
 
-        if (userResponse.data.yourAnimal && userResponse.data.yourAnimal.length > 0) {
-          console.log("Dados de yourAnimal:", userResponse.data.yourAnimal);
-
-          const petResponses = await Promise.all(
-            userResponse.data.yourAnimal.map(async (pet) => {
-              console.log("Pet ID:", pet);  // Verifique aqui qual valor está sendo impresso
-              if (pet) {
-                return api.get(`/pet/${pet}`, {
-                  headers: {
-                    'Authorization': `Bearer ${token}`,
-                  }
-                });
-              }
-              return null; // Se não houver pet.id, retorna null
-            })
-          );
-
-          setPets(petResponses.filter((res) => res !== null).map((res) => res.data));
+        // Os pets agora são gerenciados pelo contexto, não precisamos buscar aqui
+        // Se ainda não há pets carregados, buscar via contexto
+        if (pets.length === 0) {
+          fetchUserPets();
         }
 
       } catch (error) {
@@ -291,7 +272,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [router]);
+  }, [router, pets.length, fetchUserPets]);
 
   return (
     <div className="w-full h-full flex flex-row relative overflow-hidden profile-container">
@@ -496,7 +477,7 @@ const Profile = () => {
               ) : selectedPet && editingPet ? (
                 <div className="flex gap-2">
                   <button
-                    onClick={updatePet}
+                    onClick={updatePetData}
                     className="text-sm text-green-600 hover:underline"
                   >
                     Salvar
@@ -549,13 +530,13 @@ const Profile = () => {
                 <div className="h-10 md:h-12 w-full md:w-[250px] p-2 md:p-3 rounded-[15px] bg-[#e8f0fe] profile-form-field">
                   {!editingPet ? (
                     <p className="text-sm md:text-base font-light text-[#383434]">
-                      {selectedPet?.species || "Espécie"}
+                      {selectedPet?.specie || "Espécie"}
                     </p>
                   ) : (
                     <input
                       type="text"
-                      name="species"
-                      value={petForm.species}
+                      name="specie"
+                      value={petForm.specie}
                       onChange={handlePetChange}
                       placeholder="Espécie"
                       className="w-full h-full bg-transparent outline-none text-sm md:text-base font-light text-[#383434]"
@@ -565,13 +546,13 @@ const Profile = () => {
                 <div className="h-10 md:h-12 w-full p-2 md:p-3 rounded-[15px] bg-[#e8f0fe] profile-form-field">
                   {!editingPet ? (
                     <p className="text-sm md:text-base font-light text-[#383434]">
-                      {selectedPet?.height || "Porte"}
+                      {selectedPet?.size || "Porte"}
                     </p>
                   ) : (
                     <input
                       type="text"
-                      name="height"
-                      value={petForm.height}
+                      name="size"
+                      value={petForm.size}
                       onChange={handlePetChange}
                       placeholder="Porte"
                       className="w-full h-full bg-transparent outline-none text-sm md:text-base font-light text-[#383434]"
@@ -581,13 +562,13 @@ const Profile = () => {
                 <div className="h-10 md:h-12 w-full p-2 md:p-3 rounded-[15px] bg-[#e8f0fe] profile-form-field">
                   {!editingPet ? (
                     <p className="text-sm md:text-base font-light text-[#383434]">
-                      {selectedPet?.breed || "Raça"}
+                      {selectedPet?.race || "Raça"}
                     </p>
                   ) : (
                     <input
                       type="text"
-                      name="breed"
-                      value={petForm.breed}
+                      name="race"
+                      value={petForm.race}
                       onChange={handlePetChange}
                       placeholder="Raça"
                       className="w-full h-full bg-transparent outline-none text-sm md:text-base font-light text-[#383434]"
@@ -639,7 +620,7 @@ const Profile = () => {
                 <div
                   key={index}
                   onClick={() => {
-                    setSelectedPet(pet);
+                    selectPet(pet);
                     setEditingPet(false);
                   }}
                   className={`w-[120px] h-[120px] rounded-[15px] bg-[#e8f0fe] overflow-hidden cursor-pointer border-2 ${
@@ -649,7 +630,13 @@ const Profile = () => {
                   }`}
                 >
                   <img
-                    src={pet.imgAnimal?.[0]?.url || "/placeholder.jpg"}
+                    src={
+                      pet.imgAnimal && pet.imgAnimal.length > 0
+                        ? (typeof pet.imgAnimal[0] === 'string'
+                            ? `https://petlink-bucket.s3.amazonaws.com/${pet.imgAnimal[0]}`
+                            : pet.imgAnimal[0]?.url || "/placeholder.jpg")
+                        : "/placeholder.jpg"
+                    }
                     alt={pet.name}
                     className="object-cover w-full h-full"
                   />
