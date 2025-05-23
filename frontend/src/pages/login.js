@@ -18,8 +18,14 @@ const Login = () => {
     e.preventDefault();
     try {
       console.log("Iniciando login com:", email);
-      await loginUser(email, password);
-      console.log("Login bem-sucedido");
+      const userData = await loginUser(email, password);
+      console.log("Login bem-sucedido", userData);
+
+      // Garantir que o nome do usuário seja armazenado
+      if (userData && userData.username) {
+        localStorage.setItem("userName", userData.username);
+      }
+
       alert('Login realizado com sucesso!');
       router.push('/profile');
     } catch (error) {

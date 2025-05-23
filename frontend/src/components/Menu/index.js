@@ -1,9 +1,38 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const Menu = () => {
     const router = useRouter();
+    const [userName, setUserName] = useState('');
+
+    useEffect(() => {
+        // Verificar se o usuário está logado
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+
+        if (!token || !userId) {
+            router.push('/login');
+        }
+
+        // Obter o nome do usuário do localStorage se disponível
+        const storedUserName = localStorage.getItem('userName');
+        if (storedUserName) {
+            setUserName(storedUserName);
+        }
+    }, []);
+
+    // Função para fazer logout
+    const handleLogout = () => {
+        // Remover dados do localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userName');
+
+        // Redirecionar para a página de login
+        router.push('/login');
+    };
 
     // Menu para desktop
     const DesktopMenu = () => (
@@ -66,9 +95,26 @@ const Menu = () => {
                     <div className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-2 bg-transparent w-full hover:bg-white/20 rounded-md transition-all px-2">
                         <img className="w-[22px] h-[22px] md:w-[26px] md:h-[26px] object-cover" src="/Logo.png" />
                         <p className="text-sm md:text-base font-medium text-left text-black">
-                            User
+                            {userName || 'User'}
                         </p>
                     </div>
+                </div>
+
+                {/* Botão de Logout */}
+                <div className="mt-auto mb-4 w-full">
+                    <button
+                        onClick={handleLogout}
+                        className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-3 md:py-4 bg-transparent w-full hover:bg-white/20 rounded-md transition-all"
+                    >
+                        <img
+                            src="/icons/exit.svg"
+                            className="w-[22px] h-[22px] md:w-[26px] md:h-[26px] object-cover ml-2"
+                            alt="Sair"
+                        />
+                        <p className="text-sm md:text-base font-medium text-left text-black">
+                            Sair
+                        </p>
+                    </button>
                 </div>
             </div>
         </div>
@@ -100,6 +146,11 @@ const Menu = () => {
             <button className="menu-mobile-item" onClick={() => {router.push(`/profile`)}}>
                 <img src="/Logo.png" className="w-[24px] h-[24px] object-cover" />
                 <p className="text-xs font-medium text-center text-black">Perfil</p>
+            </button>
+
+            <button className="menu-mobile-item" onClick={handleLogout}>
+                <img src="/icons/exit.svg" className="w-[24px] h-[24px] object-cover" />
+                <p className="text-xs font-medium text-center text-black">Sair</p>
             </button>
         </div>
     );

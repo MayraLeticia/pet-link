@@ -37,6 +37,11 @@ export const loginUser = async (email, password) => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userId", response.data.id);
 
+      // Salvar o nome do usuário se disponível
+      if (response.data.username) {
+        localStorage.setItem("userName", response.data.username);
+      }
+
       // Adicionar o token ao cabeçalho padrão para todas as requisições futuras
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
     }
