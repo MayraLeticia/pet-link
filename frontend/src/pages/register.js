@@ -18,6 +18,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState(''); // Estado para a confirmação de senha
   const [error, setError] = useState(''); // Estado para exibir erros
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -47,52 +48,35 @@ const Register = () => {
 
   return (
 
-    <div id="register" className="w-screen h-screen flex flex-row justify-center items-center">
-      <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2">
-        <div className="flex-grow-0 flex-shrink-0">
+    <div id="register" className="w-screen h-screen flex flex-row justify-center items-center auth-container">
+      <div id="left-side" className="flex flex-col justify-center items-center bg-custom-gradient h-screen w-1/2 auth-left-side">
+        <div className="absolute top-1 left-1 justify-center items-center gap-2 flex-row flex auth-logo">
           <img
             src="/Logo.png"
-            className="w-10 h-10 absolute left-[9.5px] top-[14.5px] object-cover"
+            className="w-16 h-16 object-cover"
           />
-          <p className="absolute left-[77px] top-6 text-[32px] font-semibold text-left text-[#4d87fc]">
+          <p className="text-3xl font-semibold text-left text-[#4d87fc]">
             Pet Link
           </p>
         </div>
         <div id="init" className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-12">
-          <img src='/image.svg' alt=" bichinhos" className="w-96 h-96" />
-          <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-6">
-            <p className="self-stretch flex-grow-0 flex-shrink-0 text-3xl font-bold text-center text-[#212334]">
+          <img src='/image.svg' alt="bichinhos" className="w-96 h-96 auth-image" />
+          <div className="flex flex-col justify-start items-center gap-6">
+            <p className="text-3xl font-bold text-center text-[#212334] auth-title">
               O seu bichinho tambêm merece amor.
             </p>
-            <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
+            <p className="text-xl text-center text-[#585b7a] auth-subtitle">
               Entre agora pra nossa turma!
             </p>
           </div>
-          {/* <div className="flex-grow-0 flex-shrink-0 w-[535px] h-[86px]">
-                <div className="w-[535px] h-[86px] absolute left-[12.5px] top-[806.5px] rounded-[15px] bg-white/20 border border-[#cdcdcd]/[0.66]" />
-                    <p className="w-[130px] h-[33px] absolute left-[81px] top-[834px] text-xl text-center text-[#646464]">
-                        Registrar
-                    </p>
-                    <div className="w-[268px] h-[84px]">
-
-                    <div
-                    className="w-[268px] h-[84px] absolute left-[279.5px] top-[808.5px] rounded-[15px] bg-white/50 border border-[#cdcdcd]/[0.66]"
-                    style={{ boxShadow: "0px 0px 4px 0 rgba(0,0,0,0.25)" }}
-                    />
-                    <p className="w-[77px] h-[33px] absolute left-[377px] top-[834px] text-xl text-center text-[#646464]">
-                    Login
-                    </p>
-                </div>
-            </div> */}
-
-
         </div>
       </div>
 
-      <form onSubmit={handleRegister} id="right-side" className="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-8 h-screen w-1/2 py-7 px-28">
-        <div id="mensage" className="flex flex-col justify-start items-center gap-4">
-          <div className=" flex justify-center items-center flex-row flex-grow-0 flex-shrink-0 ">
-            <p className="text-4xl font-bold text-center text-[#212334]">
+      <div id="right-side" className="flex flex-col justify-center items-center h-screen w-1/2 px-2">
+        <form onSubmit={handleRegister} className="flex flex-col justify-center items-center gap-4 w-full auth-form-container">
+        <div id="mensage" className="flex flex-col justify-start items-center gap-2">
+          <div className="flex justify-center items-center flex-row flex-grow-0 flex-shrink-0">
+            <p className="text-4xl font-bold text-center text-[#212334] auth-title">
               Bem-vindo(a)!
             </p>
             <svg
@@ -126,50 +110,58 @@ const Register = () => {
               ></path>
             </svg>
           </div>
-          <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a]">
+          <p className="self-stretch flex-grow-0 flex-shrink-0 text-xl text-center text-[#585b7a] auth-subtitle">
             Seja Bem-vindo á plataforma, entre e divirta-se!
           </p>
         </div>
-        <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4">
+        <div id="form" className="w-full flex flex-col justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-3">
           <Input placeholder="Nome de usuário" width="w-full" onChange={(e) => setUsername(e.target.value)} />
-          <Input placeholder="E-mail" width="w-full" onChange={(e) => setEmail(e.target.value)} />
-          <div className="flex flex-row justify-center items-center w-full self-stretch flex-grow-0 flex-shrink-0 gap-6">
-            <Input placeholder="Senha" width="w-fit" onChange={(e) => setPassword(e.target.value)} />
-            <Input placeholder="Confirmar senha" width="w-fit" onChange={(e) => setConfirmPassword(e.target.value)} />
+          <Input placeholder="E-mail" type="email" width="w-full" onChange={(e) => setEmail(e.target.value)} />
+          <div className="flex flex-col md:flex-row justify-center items-center w-full self-stretch flex-grow-0 flex-shrink-0 gap-2 auth-password-fields">
+            <div className="w-full">
+              <Input placeholder="Senha" type={showPassword ? "text" : "password"} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <div className="w-full">
+              <Input placeholder="Confirmar senha" type={showPassword ? "text" : "password"} onChange={(e) => setConfirmPassword(e.target.value)} />
+            </div>
           </div>
           {error && (
-            <p className="text-red-500 text-sm absolute">{error}</p> // Exibir erro se as senhas não coincidirem
+            <p className="text-red-500 text-sm">{error}</p>
           )}
         </div>
-        <div id="settings" className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-40">
-          <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464] cursor-pointer">
+        <div id="settings" className="flex justify-center items-center relative auth-settings">
+          <p className="flex-grow-0 flex-shrink-0 text-base font-light text-left text-[#646464]">
             Já possui uma conta?
-            <a className='text-[#407bff] cursor-pointer'
+            <a className='text-[#407bff] cursor-pointer ml-2 hover:underline'
               onClick={() => {
-                router.push(`/login`); // Altere para a rota desejada
+                router.push(`/login`);
               }}
             >
               Login</a>
           </p>
-          <Checkbox nome="Mostrar senha" />
+          <Checkbox
+            nome="Mostrar senha"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
         </div>
         <Button
           type="submit"
           name="Registrar-se"
           width="w-full"
-          heigth="h-16"
+          heigth="h-14"
           color="bg-[#ffa2df]"
           border="border-[#fc7bcf]"
           className="hover:bg-[#fc7bcf]"
         />
-        <div className="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 ">
+        <div className="flex flex-row justify-center items-center flex-grow-0 flex-shrink-0 w-full">
           <svg
             width="241"
             height="3"
             viewBox="0 0 241 3"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className=""
+            className="auth-divider"
             preserveAspectRatio="none"
           >
             <path
@@ -180,7 +172,7 @@ const Register = () => {
             >
             </path>
           </svg>
-          <p className="ml-2 mr-2 text-sm font-light text-left text-[#646464]">
+          <p className="mx-4 text-sm font-light text-center text-[#646464]">
             ou
           </p>
           <svg
@@ -189,7 +181,7 @@ const Register = () => {
             viewBox="0 0 241 3"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className=""
+            className="auth-divider"
             preserveAspectRatio="none"
           >
             <path
@@ -201,27 +193,27 @@ const Register = () => {
             </path>
           </svg>
         </div>
-        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-12">
+        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-8 auth-social-buttons">
           <Button
             icon='/icons/Google.png'
             onClick={() => signIn('google')} // inicia o fluxo de autenticação do Google quando o botão é clicado
-            width="w-[75px]"
-            height="h-[75px]"
+            width="w-[70px]"
+            height="h-[70px]"
             color="bg-[#e8f0fe]"
             border="border-[#d6ddea]"
           />
           <Button
             icon='/icons/Meta.png'
             onClick={() => signIn('facebook')}
-            width="w-[75px]"
-            height="h-[75px]"
+            width="w-[70px]"
+            height="h-[70px]"
             color="bg-[#e8f0fe]"
             border="border-[#d6ddea]"
           />
         </div>
 
       </form>
-
+      </div>
     </div>
   );
 }

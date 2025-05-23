@@ -7,7 +7,9 @@ const UserSchema  = new mongoose.Schema({
     password:{type: String, require:false},
     email:{type: String, require: true},
     yourAnimal:[{type:mongoose.Schema.Types.ObjectId, ref:"Pet"}],
-    yourFeed:[{type:mongoose.Schema.Types.ObjectId, ref:"Feed"}]
+    yourFeed:[{type:mongoose.Schema.Types.ObjectId, ref:"Feed"}],
+    resetPasswordToken: {type: String},
+    resetPasswordExpires: {type: Date}
 })
 
 module.exports = mongoose.model('User', UserSchema);

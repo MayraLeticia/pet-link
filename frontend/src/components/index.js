@@ -8,3 +8,4 @@ export { default as Password } from "./Password";
 export { default as Checkbox } from "./Checkbox";
 export { default as PetRegister } from "./PetRegister";
 export { default as EditableInput } from "./EditableInput";
+export { default as Loading } from "./Loading";

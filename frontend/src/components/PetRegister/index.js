@@ -17,7 +17,7 @@ const PetRegister = () => {
         gender: "",
         file: null
     });
-    
+
     // Função para atualizar os campos de texto
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,11 +59,11 @@ const PetRegister = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-full">
             {/* Botão para abrir o modal */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="px-4 py-2 text-white bg-blue-500 rounded-md"
+                className="px-4 py-2 text-white bg-blue-500 rounded-md w-full md:w-auto"
             >
                 Adicionar Pet
             </button>
@@ -71,20 +71,19 @@ const PetRegister = () => {
             {/* Modal */}
             {isOpen && (
                 <div
-                    className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-auto h-4/5 gap-2.5 px-12 py-10 rounded-3xl bg-white"
+                    className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-[90%] md:w-auto h-[90%] md:h-4/5 gap-2.5 px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-8 lg:py-10 rounded-3xl bg-white overflow-auto"
                     style={{ boxShadow: "4px 4px 10px 0 rgba(0,0,0,0.25)" }}
                 >
-
-                    <div className="w-full flex justify-between items-center">
-                        <p className="text-2xl font-semibold text-left text-[#ffa2df]">
+                    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+                        <p className="text-xl sm:text-2xl font-semibold text-left text-[#ffa2df]">
                             Cadastro de pet
                         </p>
 
-                        <div className="w-auto flex justify-end items-center gap-4">
-                            <Button 
+                        <div className="w-full sm:w-auto flex justify-between sm:justify-end items-center gap-4">
+                            <Button
                                 name="Salvar"
-                                width="w-24"
-                                heigth="h-10"
+                                width="w-20 sm:w-24"
+                                heigth="h-8 sm:h-10"
                                 color="bg-[#ffa2df]"
                                 border="border-[#fc7bcf]"
                                 className="hover:bg-[#fc7bcf]"
@@ -94,7 +93,6 @@ const PetRegister = () => {
                             <button onClick={() => setIsOpen(false)}>
                                 <img src="icons/Cancel.png" className="w-4 h-4 object-cover" />
                             </button>
-                            
                         </div>
                     </div>
 

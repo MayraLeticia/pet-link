@@ -4,7 +4,7 @@ import React from 'react';
 import { Button } from "../components";
 import { useRouter } from 'next/navigation';
 
-const Home = () => {
+const Landing = () => {
 
     const router = useRouter();
 
@@ -663,12 +663,12 @@ const Home = () => {
                     </defs>
                 </svg>
                 <div className="flex justify-between items-center flex-grow-0 flex-shrink-0 w-screen h-24 absolute left-0 top-0 px-4 py-3 bg-white shadow-sm">
-                    <div className="flex justify-between items-center gap-2">
+                    <div className="flex justify-center items-center gap-2">
                         <img
                             src="/Logo.png"
-                            className="w-10 h-10 absolute left-[9.5px] top-[14.5px] object-cover"
+                            className="w-16 h-16 object-cover"
                         />
-                        <p className="absolute left-[77px] top-6 text-[32px] font-semibold text-left text-[#4d87fc]">
+                        <p className="text-3xl font-semibold text-left text-[#4d87fc]">
                             Pet Link
                         </p>
                     </div>
@@ -680,14 +680,10 @@ const Home = () => {
                         border="border-[#fc7bcf]"
                         className="hover:bg-[#fc7bcf]"
                         onClick={() => {
-                            router.push(`/login`); // Altere para a rota desejada
+                            router.push(`/`); // Altere para a rota desejada
                         }}
                     />
-                    {/* <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-64 h-14 relative gap-2.5 px-6 py-3 rounded-2xl bg-[#ffa2df] border border-[#fc7bcf]">
-                        <p className="flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-white">
-                            Comece de graça
-                        </p>
-                    </div> */}
+                    
                 </div>
                 <div className="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 gap-4 w-2/5">
                     <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
@@ -720,11 +716,7 @@ const Home = () => {
                             router.push(`/login`); // Altere para a rota desejada
                         }}
                     />
-                    {/* <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-64 h-14 relative gap-2.5 px-6 py-3 rounded-2xl bg-[#ffa2df] border border-[#fc7bcf]">
-                        <p className="flex-grow-0 flex-shrink-0 text-xl font-semibold text-left text-white">
-                            Comece de graça
-                        </p>
-                    </div> */}
+                    
                 </div>
             </div>
         </div>
@@ -732,4 +724,4 @@ const Home = () => {
 }
 
 
-export default Home;
+export default Landing;
