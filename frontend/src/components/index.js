@@ -9,3 +9,5 @@ export { default as Checkbox } from "./Checkbox";
 export { default as PetRegister } from "./PetRegister";
 export { default as EditableInput } from "./EditableInput";
 export { default as Loading } from "./Loading";
+export { default as Dropdown } from "./Dropdown";
+export { default as RadiusSlider } from "./RadiusSlider";

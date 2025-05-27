@@ -45,7 +45,7 @@ const getNearbyPets = async (req, res) => {
             type: 'Point',
             coordinates: [parseFloat(lng), parseFloat(lat)],
           },
-          $maxDistance: parseFloat(radius) * 1000,
+          $maxDistance: parseFloat(radius),
         },
       },
     });

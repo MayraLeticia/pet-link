@@ -1,0 +1,94 @@
+/* Leaflet map styles */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  border-radius: 8px 0 0 8px;
+}
+
+/* Custom marker styles */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+
+.leaflet-popup-content {
+  margin: 8px 12px;
+  line-height: 1.4;
+}
+
+/* Loading state */
+.map-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: #f5f5f5;
+  border-radius: 8px 0 0 8px;
+}
+
+/* Pet card hover effects */
+.pet-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pet-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Scrollbar styling for sidebar */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Text truncation utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Button hover effects */
+.filter-button {
+  transition: background-color 0.2s ease;
+}
+
+.filter-button:hover {
+  background-color: rgba(77, 135, 252, 0.1);
+}
+
+/* Map controls */
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: white !important;
+  color: #333 !important;
+  border: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* Attribution control */
+.leaflet-control-attribution {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 10px !important;
+}

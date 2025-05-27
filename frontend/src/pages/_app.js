@@ -8,6 +8,7 @@ import "../styles/globals.css";
 import "../styles/auth-responsive.css";
 import "../styles/menu-profile-responsive.css";
 import "../styles/profile-zoom.css";
+import "../styles/map.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
