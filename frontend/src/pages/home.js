@@ -360,7 +360,7 @@ const Home = () => {
                 </div>
 
                 <img
-                  src={pet.imgAnimal?.[0]?.url || "placeholder.jpg"}
+                  src={"https://uploadpetlink.s3.us-east-1.amazonaws.com/"+ pet.imgAnimal[0] || "placeholder.jpg"}
                   alt={pet.name}
                   className="w-full h-[140px] object-cover rounded-md mb-2"
                 />
@@ -403,8 +403,8 @@ const Home = () => {
               Localização: {selectedPetForDetails.location}
             </p>
             <img
-              src={selectedPetForDetails.imgAnimal?.[0]?.url || "placeholder.jpg"}
-              alt={selectedPetForDetails.name}
+              src={"https://uploadpetlink.s3.us-east-1.amazonaws.com/"+ selectedPet.imgAnimal[0] || "placeholder.jpg"}
+              alt={selectedPet.name}
               className="w-full h-64 object-cover rounded-lg mt-4"
             />
             <p className="text-gray-700 mt-4">{selectedPetForDetails.description}</p>
