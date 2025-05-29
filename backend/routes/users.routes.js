@@ -6,6 +6,7 @@ const userRoutes = express.Router();
 
 userRoutes.post('/', new userController().registerUser);
 userRoutes.post('/login', new userController().loginUser);
+userRoutes.post('/google-auth', new userController().googleAuth);
 userRoutes.patch('/:id', new userController().updateUser);
 userRoutes.delete('/:id', new userController().deleteUser);
 userRoutes.get('/allUsers', new userController().getUser);

@@ -9,7 +9,10 @@ const UserSchema  = new mongoose.Schema({
     yourAnimal:[{type:mongoose.Schema.Types.ObjectId, ref:"Pet"}],
     yourFeed:[{type:mongoose.Schema.Types.ObjectId, ref:"Feed"}],
     resetPasswordToken: {type: String},
-    resetPasswordExpires: {type: Date}
+    resetPasswordExpires: {type: Date},
+    googleId: {type: String},
+    profileImage: {type: String},
+    isGoogleUser: {type: Boolean, default: false}
 })
 
 module.exports = mongoose.model('User', UserSchema);

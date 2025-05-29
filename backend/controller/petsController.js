@@ -17,18 +17,18 @@ const s3 = new S3Client({
 class petsController{
 
     async registerPets(req,res){
-        
+
         try {
             const {name, race, age, description,weight, location, specie, size, gender, userId}= req.body;
             if(!name || !age || !weight || !specie|| !size || !gender)return res.status(400).send("Não foi prenchido corretamente todos os campos!");
-            
+
             const newPet = new Pet({
-                name, 
-                race, 
-                age, 
-                description, 
+                name,
+                race,
+                age,
+                description,
                 weight,
-                location, 
+                location,
                 specie,
                 gender,
                 size,
@@ -36,7 +36,7 @@ class petsController{
                 
 
             });
-            
+
             await newPet.save();
 
             await User.findByIdAndUpdate(userId,{$push:{yourAnimal:newPet._id}} );
@@ -45,7 +45,7 @@ class petsController{
 
         } catch (error) {
             console.error(error);
-            
+
         }
     }
 
@@ -59,12 +59,12 @@ class petsController{
             return res.status(404).json({ message: "Pet não encontrado!" });
         }
 
-        
-        const newImages = req.files ? req.files.map(file => file.key) : []; 
+
+        const newImages = req.files ? req.files.map(file => file.key) : [];
         const updatedImages = [...pet.imgAnimal, ...newImages];
 
         const updatePet = await Pet.findByIdAndUpdate(
-            id, 
+            id,
             { name, race, age, description, weight, location, specie, imgAnimal: updatedImages },
             { new: true }
         );
@@ -89,12 +89,15 @@ class petsController{
 
     async getPets(req,res){
         try {
-            const { specie, race, age } = req.query;
+            const { specie, race, age, userId } = req.query;
 
             const filter = {};
             if (specie) filter.specie = specie;
             if (race) filter.race = race;
             if (age) filter.age = parseInt(age);
+
+            // Se userId for fornecido, filtrar apenas pets desse usuário
+            if (userId) filter.userId = userId;
 
             const pets = await Pet.find(filter);
             res.status(200).json(pets)
@@ -106,69 +109,69 @@ class petsController{
 
     async getPetsById(req, res) {
         const petId = req.params.id;
-    
-    
+
+
         try {
-            
+
             if (!mongoose.Types.ObjectId.isValid(petId)) {
                 return res.status(400).json({ message: "ID de pet inválido." });
             }
-    
-            const pet = await Pet.findById(petId); 
-    
+
+            const pet = await Pet.findById(petId);
+
             if (!pet) {
                 return res.status(404).json({ message: "Pet não encontrado." });
             }
-    
-            return res.status(200).json(pet); 
+
+            return res.status(200).json(pet);
         } catch (error) {
             console.error("Erro ao buscar pet:", error);
             return res.status(500).json({ message: "Erro interno do servidor." });
         }
     }
-    
-    
+
+
 
     async deleteImage(req, res) {
         try {
             const { id } = req.params;
             const { imageKey } = req.body;
-    
-            
+
+
             const pet = await Pet.findById(id);
             if (!pet) {
                 return res.status(404).json({ message: "Pet não encontrado!" });
             }
-    
-           
+
+
             if (!pet.imgAnimal.includes(imageKey)) {
                 return res.status(400).json({
                     message: "Imagem não encontrada no banco!",
                     imagensNoBanco: pet.imgAnimal
                 });
             }
-    
-            
+
+
             const updatedImages = pet.imgAnimal.filter(img => img !== imageKey);
             await Pet.findByIdAndUpdate(id, { imgAnimal: updatedImages }, { new: true });
-    
-            
+
+
             const deleteParams = {
-                Bucket: "uploadpetlink", 
+                Bucket: "uploadpetlink",
                 Key: imageKey,
             };
-    
+
             await s3.send(new DeleteObjectCommand(deleteParams));
-    
+
             return res.status(200).json({ message: "Imagem removida com sucesso!" });
-    
+
         } catch (error) {
             console.error("Erro ao deletar imagem:", error);
             return res.status(500).json({ message: "Erro ao remover a imagem!" });
         }
     }
-    
-    
+
+
 }
 
 module.exports= {petsController};

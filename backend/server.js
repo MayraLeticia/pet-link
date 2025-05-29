@@ -60,12 +60,18 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Rotas de denúncia
+const reportRoutes = require('./routes/report.routes');
+
 // Rotas principais
 // Rotas de mensagens (histórico entre usuários)
 const routes = require('./routes/index.routes');
 const messageRoutes = require('./routes/message.routes');
 app.use('/api', routes);
 app.use('/api/messages', messageRoutes);
+
+// Rota de para denúncias
+app.use('/api/reports', reportRoutes);
 
 // Configura os eventos do Socket.IO
 configureSocket(io);

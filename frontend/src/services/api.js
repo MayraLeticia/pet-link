@@ -233,4 +233,37 @@ export const getUserById = async (userId) => {
   }
 };
 
+
+// Função para obter pets próximos
+export const getNearbyPets = async (latitude, longitude, radius = 1000) => {
+  try {
+    const response = await api.get(`/location/nearby`, {
+      params: {
+        lat: latitude,
+        lng: longitude,
+        radius: radius // radius em metros (1000 = 1km)
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar pets próximos:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Função para atualizar localização do pet
+export const updatePetLocation = async (petId, latitude, longitude) => {
+  try {
+    const response = await api.post(`/location/location`, {
+      petId,
+      latitude,
+      longitude
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar localização do pet:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export default api;

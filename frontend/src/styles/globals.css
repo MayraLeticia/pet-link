@@ -50,3 +50,35 @@ body {
   --color-green-400: #085F2B;
   --color-google: #D96445;
 }
+
+/* Estilos para o botão de logout */
+.logout-btn {
+  @apply flex justify-start items-center gap-4 py-3 px-4 bg-transparent w-full;
+  @apply border border-transparent rounded-md transition-all duration-200;
+  @apply hover:bg-red-50 hover:border-red-200;
+}
+
+.logout-btn:hover .logout-icon {
+  filter: brightness(0) sepia(1) saturate(100%) hue-rotate(0deg) brightness(0.8) contrast(1.2);
+}
+
+.logout-btn:hover .logout-text {
+  @apply text-red-600;
+}
+
+.logout-btn:active {
+  transform: translateY(1px);
+  @apply bg-red-100;
+}
+
+/* Animação de confirmação */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.logout-btn:focus {
+  animation: shake 0.3s ease-in-out;
+  @apply outline-none ring-2 ring-red-300 ring-offset-2;
+}
