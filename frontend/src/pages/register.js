@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 import { Button, Checkbox, Input } from "../components";
@@ -12,6 +12,7 @@ import Image from "../../public/image.svg";
 const Register = () => {
 
   const router = useRouter(); // Hook para navegação
+  const { data: session, status } = useSession();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -19,6 +20,33 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState(''); // Estado para a confirmação de senha
   const [error, setError] = useState(''); // Estado para exibir erros
   const [showPassword, setShowPassword] = useState(false);
+
+  // Verificar se o usuário já está logado
+  useEffect(() => {
+    // Verificar token local primeiro
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    console.log('Verificando login no registro - Token:', token ? 'existe' : 'não existe');
+
+    // Se há token local válido, redirecionar
+    if (token && userId) {
+      console.log('Token local encontrado, redirecionando para perfil');
+      router.push('/profile');
+      return;
+    }
+
+    // Verificar sessão do Google apenas se não há token local
+    if (status === "authenticated" && session && session.backendToken) {
+      console.log('Sessão Google autenticada no registro, salvando dados');
+      localStorage.setItem("token", session.backendToken);
+      localStorage.setItem("userId", session.backendId);
+      localStorage.setItem("userName", session.user.name);
+
+      // Redirecionar para o perfil
+      router.push('/profile');
+    }
+  }, [session, status, router]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -193,23 +221,14 @@ const Register = () => {
             </path>
           </svg>
         </div>
-        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-8 auth-social-buttons">
-          <Button
-            icon='/icons/Google.png'
+        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 auth-social-buttons">
+          <button
             onClick={() => signIn('google')} // inicia o fluxo de autenticação do Google quando o botão é clicado
-            width="w-[70px]"
-            height="h-[70px]"
-            color="bg-[#e8f0fe]"
-            border="border-[#d6ddea]"
-          />
-          <Button
-            icon='/icons/Meta.png'
-            onClick={() => signIn('facebook')}
-            width="w-[70px]"
-            height="h-[70px]"
-            color="bg-[#e8f0fe]"
-            border="border-[#d6ddea]"
-          />
+            className="w-full h-12 bg-white border border-gray-300 rounded-md flex items-center justify-center gap-3 hover:bg-gray-50 hover:shadow-md transition-all duration-200 text-gray-600 font-medium text-sm"
+          >
+            <img src="/icons/Google.png" alt="Google" className="w-5 h-5" />
+            Registrar com Google
+          </button>
         </div>
 
       </form>

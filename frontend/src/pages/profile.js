@@ -339,6 +339,8 @@ const Profile = () => {
       )}
 
       <div className="flex flex-col justify-start items-start gap-4 mx-auto px-6 py-4 w-full max-w-[1000px] profile-content overflow-x-hidden">
+
+
         {/* Cabeçalho */}
         <div className="w-full md:w-auto relative profile-header">
           <p className="text-xl md:text-2xl font-medium text-left text-[#4d87fc] profile-title">Your profile</p>

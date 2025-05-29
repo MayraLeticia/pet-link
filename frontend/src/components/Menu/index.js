@@ -34,11 +34,25 @@ const Menu = () => {
     }, [pets.length, fetchUserPets]);
 
     // Função para fazer logout
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userName');
-        router.push('/login');
+    const handleLogoutClick = async () => {
+        if (confirm('Tem certeza que deseja encerrar a sessão?')) {
+            // Marcar que estamos fazendo logout
+            sessionStorage.setItem('justLoggedOut', 'true');
+
+            // Limpar localStorage
+            localStorage.clear();
+
+            // Fazer signOut do NextAuth/Google se estiver logado via Google
+            try {
+                const { signOut } = await import('next-auth/react');
+                await signOut({ redirect: false });
+            } catch (error) {
+                console.log('NextAuth não disponível ou erro no signOut:', error);
+            }
+
+            // Redirecionar para login
+            window.location.replace('/login');
+        }
     };
 
     // Função para adicionar novo pet
@@ -168,16 +182,18 @@ const Menu = () => {
                 {/* Botão de Logout */}
                 <div className="mt-auto mb-4 w-full">
                     <button
-                        onClick={handleLogout}
-                        className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-3 md:py-4 bg-transparent w-full hover:bg-white/20 rounded-md transition-all"
+                        onClick={handleLogoutClick}
+                        className="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative gap-4 py-3 md:py-4 bg-transparent w-full hover:bg-red-50 hover:border-red-200 border border-transparent rounded-md transition-all group cursor-pointer z-10"
+                        title="Encerrar sessão"
+                        style={{ pointerEvents: 'auto' }}
                     >
                         <img
                             src="/icons/exit.svg"
-                            className="w-[22px] h-[22px] md:w-[26px] md:h-[26px] object-cover ml-2"
+                            className="w-[22px] h-[22px] md:w-[26px] md:h-[26px] object-cover ml-2 group-hover:filter group-hover:brightness-0 group-hover:sepia group-hover:saturate-100 group-hover:hue-rotate-0 transition-all"
                             alt="Sair"
                         />
-                        <p className="text-sm md:text-base font-medium text-left text-black">
-                            Sair
+                        <p className="text-sm md:text-base font-medium text-left text-black group-hover:text-red-600 transition-colors">
+                            Encerrar Sessão
                         </p>
                     </button>
                 </div>
@@ -246,9 +262,19 @@ const Menu = () => {
                 <p className="text-xs font-medium text-center text-black">Perfil</p>
             </button>
 
-            <button className="menu-mobile-item" onClick={handleLogout}>
-                <img src="/icons/exit.svg" className="w-[24px] h-[24px] object-cover" />
-                <p className="text-xs font-medium text-center text-black">Sair</p>
+            <button
+                className="menu-mobile-item hover:bg-red-50 transition-colors duration-200 group cursor-pointer"
+                onClick={handleLogoutClick}
+                title="Encerrar sessão"
+                style={{ pointerEvents: 'auto' }}
+            >
+                <img
+                    src="/icons/exit.svg"
+                    className="w-[24px] h-[24px] object-cover group-hover:filter group-hover:brightness-0 group-hover:sepia group-hover:saturate-100 group-hover:hue-rotate-0 transition-all duration-200"
+                />
+                <p className="text-xs font-medium text-center text-black group-hover:text-red-600 transition-colors duration-200">
+                    Sair
+                </p>
             </button>
         </div>
     );

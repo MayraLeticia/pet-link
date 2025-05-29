@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 import { loginUser } from '../services/api';
@@ -10,9 +10,45 @@ import { signIn, useSession } from 'next-auth/react';
 const Login = () => {
 
   const router = useRouter(); // Hook para navegação
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Verificar se o usuário já está logado
+  useEffect(() => {
+    // Não fazer nada se ainda está carregando
+    if (status === "loading") {
+      return;
+    }
+
+    // Verificar se estamos vindo de um logout
+    const isComingFromLogout = sessionStorage.getItem('justLoggedOut');
+    if (isComingFromLogout) {
+      sessionStorage.removeItem('justLoggedOut');
+      return;
+    }
+
+    // Verificar token local primeiro
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    // Se há token local válido, redirecionar
+    if (token && userId && token.length > 10) {
+      router.push('/profile');
+      return;
+    }
+
+    // Verificar sessão do Google apenas se não há token local
+    if (status === "authenticated" && session && session.backendToken) {
+      localStorage.setItem("token", session.backendToken);
+      localStorage.setItem("userId", session.backendId);
+      localStorage.setItem("userName", session.user.name);
+
+      // Redirecionar para o perfil
+      router.push('/profile');
+    }
+  }, [session, status, router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -188,23 +224,14 @@ const Login = () => {
             </path>
           </svg>
         </div>
-        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-8 auth-social-buttons">
-          <Button
-            icon='/icons/Google.png'
+        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 auth-social-buttons">
+          <button
             onClick={() => signIn("google")}
-            width="w-[70px]"
-            height="h-[70px]"
-            color="bg-[#e8f0fe]"
-            border="border-[#d6ddea]"
-          />
-          <Button
-            icon='/icons/Meta.png'
-            onClick={() => signIn('facebook')}
-            width="w-[70px]"
-            height="h-[70px]"
-            color="bg-[#e8f0fe]"
-            border="border-[#d6ddea]"
-          />
+            className="w-full h-12 bg-white border border-gray-300 rounded-md flex items-center justify-center gap-3 hover:bg-gray-50 hover:shadow-md transition-all duration-200 text-gray-600 font-medium text-sm"
+          >
+            <img src="/icons/Google.png" alt="Google" className="w-5 h-5" />
+            Entrar com Google
+          </button>
         </div>
         <div className="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 gap-1">
           <p className="flex-grow-0 flex-shrink-0 text-base font-light text-center text-[#646464]">
