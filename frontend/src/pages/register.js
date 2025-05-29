@@ -221,23 +221,14 @@ const Register = () => {
             </path>
           </svg>
         </div>
-        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 gap-8 auth-social-buttons">
-          <Button
-            icon='/icons/Google.png'
+        <div className="flex justify-center items-center flex-grow-0 flex-shrink-0 auth-social-buttons">
+          <button
             onClick={() => signIn('google')} // inicia o fluxo de autenticação do Google quando o botão é clicado
-            width="w-[70px]"
-            height="h-[70px]"
-            color="bg-[#e8f0fe]"
-            border="border-[#d6ddea]"
-          />
-          <Button
-            icon='/icons/Meta.png'
-            onClick={() => signIn('facebook')}
-            width="w-[70px]"
-            height="h-[70px]"
-            color="bg-[#e8f0fe]"
-            border="border-[#d6ddea]"
-          />
+            className="w-full h-12 bg-white border border-gray-300 rounded-md flex items-center justify-center gap-3 hover:bg-gray-50 hover:shadow-md transition-all duration-200 text-gray-600 font-medium text-sm"
+          >
+            <img src="/icons/Google.png" alt="Google" className="w-5 h-5" />
+            Registrar com Google
+          </button>
         </div>
 
       </form>
