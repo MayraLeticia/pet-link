@@ -11,3 +11,4 @@ export { default as EditableInput } from "./EditableInput";
 export { default as Loading } from "./Loading";
 export { default as Dropdown } from "./Dropdown";
 export { default as RadiusSlider } from "./RadiusSlider";
+export { default as LogoutModal } from "./LogoutModal";

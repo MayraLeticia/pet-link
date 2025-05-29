@@ -21,18 +21,30 @@ const Register = () => {
   const [error, setError] = useState(''); // Estado para exibir erros
   const [showPassword, setShowPassword] = useState(false);
 
-  // Verificar se o usuário já está logado via Google
+  // Verificar se o usuário já está logado
   useEffect(() => {
-    if (status === "authenticated" && session) {
-      // Armazenar dados da sessão no localStorage
-      if (session.backendToken) {
-        localStorage.setItem("token", session.backendToken);
-        localStorage.setItem("userId", session.backendId);
-        localStorage.setItem("userName", session.user.name);
+    // Verificar token local primeiro
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
 
-        // Redirecionar para o perfil
-        router.push('/profile');
-      }
+    console.log('Verificando login no registro - Token:', token ? 'existe' : 'não existe');
+
+    // Se há token local válido, redirecionar
+    if (token && userId) {
+      console.log('Token local encontrado, redirecionando para perfil');
+      router.push('/profile');
+      return;
+    }
+
+    // Verificar sessão do Google apenas se não há token local
+    if (status === "authenticated" && session && session.backendToken) {
+      console.log('Sessão Google autenticada no registro, salvando dados');
+      localStorage.setItem("token", session.backendToken);
+      localStorage.setItem("userId", session.backendId);
+      localStorage.setItem("userName", session.user.name);
+
+      // Redirecionar para o perfil
+      router.push('/profile');
     }
   }, [session, status, router]);
 

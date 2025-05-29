@@ -15,18 +15,38 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  // Verificar se o usuário já está logado via Google
+  // Verificar se o usuário já está logado
   useEffect(() => {
-    if (status === "authenticated" && session) {
-      // Armazenar dados da sessão no localStorage
-      if (session.backendToken) {
-        localStorage.setItem("token", session.backendToken);
-        localStorage.setItem("userId", session.backendId);
-        localStorage.setItem("userName", session.user.name);
+    // Não fazer nada se ainda está carregando
+    if (status === "loading") {
+      return;
+    }
 
-        // Redirecionar para o perfil
-        router.push('/profile');
-      }
+    // Verificar se estamos vindo de um logout
+    const isComingFromLogout = sessionStorage.getItem('justLoggedOut');
+    if (isComingFromLogout) {
+      sessionStorage.removeItem('justLoggedOut');
+      return;
+    }
+
+    // Verificar token local primeiro
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    // Se há token local válido, redirecionar
+    if (token && userId && token.length > 10) {
+      router.push('/profile');
+      return;
+    }
+
+    // Verificar sessão do Google apenas se não há token local
+    if (status === "authenticated" && session && session.backendToken) {
+      localStorage.setItem("token", session.backendToken);
+      localStorage.setItem("userId", session.backendId);
+      localStorage.setItem("userName", session.user.name);
+
+      // Redirecionar para o perfil
+      router.push('/profile');
     }
   }, [session, status, router]);
 
