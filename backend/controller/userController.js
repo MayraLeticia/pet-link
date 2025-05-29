@@ -13,10 +13,10 @@ class userController{
 
             const userByEmail = await User.findOne({email})
             if(userByEmail)return res.status(400).send("Este email já esta sendo utilizado");
-            
+
             const hashedPassword= await bcrypt.hash(password, 10);
             const newUser = new User({username, password:hashedPassword,email});
-            
+
             await newUser.save();
 
             res.status(201).json({
@@ -24,13 +24,65 @@ class userController{
                 username: newUser.username,
                 email: newUser.email
             });
-            
+
 
         } catch (error) {
             console.log(error);
             res.status(500).send('Erro ao registrar o usuário');
         }
     }
+
+    // Método para autenticação com Google
+    async googleAuth(req, res) {
+        try {
+            const { email, name, googleId, image } = req.body;
+
+            // Verificar se o usuário já existe
+            let user = await User.findOne({ email });
+
+            if (!user) {
+                // Criar novo usuário se não existir
+                const hashedPassword = await bcrypt.hash(googleId, 10); // Usar googleId como senha temporária
+
+                user = new User({
+                    username: name,
+                    email: email,
+                    password: hashedPassword,
+                    googleId: googleId,
+                    profileImage: image,
+                    isGoogleUser: true
+                });
+
+                await user.save();
+            } else {
+                // Atualizar informações do Google se o usuário já existir
+                user.googleId = googleId;
+                user.profileImage = image;
+                user.isGoogleUser = true;
+                await user.save();
+            }
+
+            // Gerar token JWT
+            const token = sign({}, '789237109234sfdadf', {
+                subject: user._id.toString(),
+                expiresIn: "1d"
+            });
+
+            res.status(200).json({
+                authenticated: true,
+                token,
+                username: user.username,
+                email: user.email,
+                id: user.id,
+                pets: user.yourAnimal || []
+            });
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Erro ao autenticar com Google');
+        }
+    }
+
         async loginUser(req,res){
             try {
                 const{email, password}= req.body;
@@ -39,7 +91,7 @@ class userController{
 
                 const isMatch = await bcrypt.compare(password, user.password);
                 if(!isMatch)return res.status(401).send('Senha incorreta');
-                
+
                 const token = sign({},'789237109234sfdadf',{
                     subject: user._id.toString(), // Corrigido
                     expiresIn:"1d"
@@ -56,7 +108,7 @@ class userController{
             } catch (error) {
                 console.log(error);
                 res.status(500).send('Erro ao fazer login');
-                
+
             }
         }
 
@@ -72,7 +124,7 @@ class userController{
             res.status(500).send('Erro ao atulizar o usuário')
         }
     }
-    
+
     async deleteUser(req,res){
         try {
             const {id}= req.params;
@@ -112,9 +164,9 @@ class userController{
             return res.status(500).json({ message: "Erro ao buscar usuário" });
         }
     }
-    
 
-    
+
+
 
 }
 module.exports={userController};

@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 import { loginUser } from '../services/api';
@@ -10,9 +10,25 @@ import { signIn, useSession } from 'next-auth/react';
 const Login = () => {
 
   const router = useRouter(); // Hook para navegação
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Verificar se o usuário já está logado via Google
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      // Armazenar dados da sessão no localStorage
+      if (session.backendToken) {
+        localStorage.setItem("token", session.backendToken);
+        localStorage.setItem("userId", session.backendId);
+        localStorage.setItem("userName", session.user.name);
+
+        // Redirecionar para o perfil
+        router.push('/profile');
+      }
+    }
+  }, [session, status, router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

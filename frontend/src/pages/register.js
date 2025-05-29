@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 import { Button, Checkbox, Input } from "../components";
@@ -12,6 +12,7 @@ import Image from "../../public/image.svg";
 const Register = () => {
 
   const router = useRouter(); // Hook para navegação
+  const { data: session, status } = useSession();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -19,6 +20,21 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState(''); // Estado para a confirmação de senha
   const [error, setError] = useState(''); // Estado para exibir erros
   const [showPassword, setShowPassword] = useState(false);
+
+  // Verificar se o usuário já está logado via Google
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      // Armazenar dados da sessão no localStorage
+      if (session.backendToken) {
+        localStorage.setItem("token", session.backendToken);
+        localStorage.setItem("userId", session.backendId);
+        localStorage.setItem("userName", session.user.name);
+
+        // Redirecionar para o perfil
+        router.push('/profile');
+      }
+    }
+  }, [session, status, router]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
