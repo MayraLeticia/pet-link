@@ -33,9 +33,10 @@ export const loginUser = async (email, password) => {
     console.log("Resposta do login:", response.data);
 
     if (typeof window !== 'undefined') {
-      // Salvar token e ID do usuário no localStorage
+      // Salvar token e dados completos do usuário no localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userId", response.data.id);
+      localStorage.setItem("user", JSON.stringify(response.data)); // ✅ ADICIONAR DADOS COMPLETOS
 
       // Salvar o nome do usuário se disponível
       if (response.data.username) {
@@ -53,6 +54,73 @@ export const loginUser = async (email, password) => {
     throw error; // Lança o erro para ser tratado no componente que chamar essa função
   }
 };
+
+
+// Buscar favoritos de um pet
+export const getFavorites = async (petId) => {
+  try {
+    console.log("🔍 Buscando favoritos para petId:", petId);
+    
+    const response = await api.get(`/favorites/${petId}`);
+    
+    console.log("✅ Favoritos encontrados:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Erro ao buscar favoritos:", error.response?.data || error.message);
+    
+    if (error.response?.status === 404) {
+      console.log("📝 Pet não tem favoritos ainda - retornando array vazio");
+      return []; // Retorna array vazio se não encontrar favoritos
+    }
+    
+    throw error;
+  }
+};
+
+// Adicionar pet aos favoritos
+export const addFavorite = async (petId, favoritePetId) => {
+  try {
+    console.log("💖 Adicionando aos favoritos:", { petId, favoritePetId });
+    
+    const response = await api.post(`/favorites/${petId}/${favoritePetId}`);
+    
+    console.log("✅ Favorito adicionado:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Erro ao adicionar favorito:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Remover pet dos favoritos
+export const removeFavorite = async (petId, favoritePetId) => {
+  try {
+    console.log("💔 Removendo dos favoritos:", { petId, favoritePetId });
+    
+    const response = await api.delete(`/favorites/${petId}/${favoritePetId}`);
+    
+    console.log("✅ Favorito removido:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Erro ao remover favorito:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Verificar se um pet é favorito
+export const checkFavorite = async (petId, favoritePetId) => {
+  try {
+    const response = await api.get(`/favorites/${petId}/check/${favoritePetId}`);
+    return response.data.isFavorite;
+  } catch (error) {
+    console.error("❌ Erro ao verificar favorito:", error.response?.data || error.message);
+    return false;
+  }
+};
+
+// ============================================
+// FUNÇÕES EXISTENTES (mantidas)
+// ============================================
 
 // Função para cadastrar um pet
 export const cadastrarPet = async (petData) => {

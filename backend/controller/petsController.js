@@ -33,7 +33,7 @@ class petsController{
                 gender,
                 size,
                 imgAnimal: req.file.key,
-                userId
+                
 
             });
             
