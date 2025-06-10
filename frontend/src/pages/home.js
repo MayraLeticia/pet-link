@@ -18,6 +18,8 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showRadiusMenu, setShowRadiusMenu] = useState(false);
   const [selectedRadius, setSelectedRadius] = useState(10); // Valor padrão: 10km
+  const [radiusFilterActive, setRadiusFilterActive] = useState(false); // Controla se o filtro de raio está ativo
+  const [userLocation, setUserLocation] = useState(null); // Localização do usuário
 
   // Estados para o popup de filtro
   const [showFilterMenu, setShowFilterMenu] = useState(false);
@@ -42,6 +44,20 @@ const Home = () => {
     "Outro": ["Outro"]
   };
 
+  // Função para calcular distância entre duas coordenadas (fórmula de Haversine)
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Raio da Terra em km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    return distance;
+  };
+
   const filteredPets = pets.filter((pet) => {
     // Excluir o pet selecionado no menu (o próprio pet do usuário)
     const isNotOwnPet = !selectedPetFromMenu || pet._id !== selectedPetFromMenu._id;
@@ -64,7 +80,20 @@ const Home = () => {
     const matchesBreed = !filters.breed ||
       (pet.race && pet.race.toLowerCase() === filters.breed.toLowerCase());
 
-    return isNotOwnPet && matchesSearch && matchesGender && matchesAge && matchesSpecies && matchesBreed;
+    // Filtro por raio (apenas se estiver ativo)
+    let matchesRadius = true;
+    if (radiusFilterActive && userLocation && pet.coordinates && pet.coordinates.coordinates) {
+      const [petLng, petLat] = pet.coordinates.coordinates;
+      const distance = calculateDistance(
+        userLocation.latitude,
+        userLocation.longitude,
+        petLat,
+        petLng
+      );
+      matchesRadius = distance <= selectedRadius;
+    }
+
+    return isNotOwnPet && matchesSearch && matchesGender && matchesAge && matchesSpecies && matchesBreed && matchesRadius;
   });
 
   // Função para extrair o ID do pet do usuário
@@ -82,6 +111,54 @@ const Home = () => {
     }
 
     return null;
+  };
+
+  // Função para obter localização do usuário
+  const getUserLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error('Geolocalização não é suportada pelo navegador'));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+        },
+        (error) => {
+          reject(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutos
+        }
+      );
+    });
+  };
+
+  // Função para aplicar filtro de raio
+  const applyRadiusFilter = async () => {
+    try {
+      const location = await getUserLocation();
+      setUserLocation(location);
+      setRadiusFilterActive(true);
+      setShowRadiusMenu(false);
+      console.log('📍 Filtro de raio aplicado:', { location, radius: selectedRadius });
+    } catch (error) {
+      console.error('❌ Erro ao obter localização:', error);
+      alert('Não foi possível obter sua localização. Verifique as permissões do navegador.');
+    }
+  };
+
+  // Função para remover filtro de raio
+  const removeRadiusFilter = () => {
+    setRadiusFilterActive(false);
+    setUserLocation(null);
+    console.log('📍 Filtro de raio removido');
   };
 
   // Função para adicionar/remover favoritos
@@ -178,11 +255,19 @@ const Home = () => {
           <div className="flex items-center gap-6 w-full">
             <div className="relative location-dropdown">
               <div
-                className="w-[132px] h-[50px] border border-[#646464] rounded-[50px] px-4 flex items-center justify-between cursor-pointer"
+                className={`w-[132px] h-[50px] border rounded-[50px] px-4 flex items-center justify-between cursor-pointer ${
+                  radiusFilterActive
+                    ? 'border-[#4d87fc] bg-[#4d87fc]/10'
+                    : 'border-[#646464]'
+                }`}
                 onClick={() => setShowRadiusMenu(!showRadiusMenu)}
               >
-                <p className="text-sm font-medium text-[#646464]">Location</p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#646464]">
+                <p className={`text-sm font-medium ${
+                  radiusFilterActive ? 'text-[#4d87fc]' : 'text-[#646464]'
+                }`}>
+                  {radiusFilterActive ? `${selectedRadius}km` : 'Location'}
+                </p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={radiusFilterActive ? 'text-[#4d87fc]' : 'text-[#646464]'}>
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </div>
@@ -194,24 +279,32 @@ const Home = () => {
                     <input
                       type="range"
                       min="1"
-                      max="100"
+                      max="10"
                       value={selectedRadius}
                       onChange={(e) => setSelectedRadius(parseInt(e.target.value))}
                       className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4d87fc]"
                       style={{
-                        background: `linear-gradient(to right, #4d87fc ${selectedRadius}%, #e5e7eb ${selectedRadius}%)`,
+                        background: `linear-gradient(to right, #4d87fc ${(selectedRadius/10)*100}%, #e5e7eb ${(selectedRadius/10)*100}%)`,
                       }}
                     />
                     <div className="flex justify-between mt-1">
                       <span className="text-xs text-gray-500">1km</span>
                       <span className="text-sm font-medium text-[#4d87fc]">{selectedRadius}km</span>
-                      <span className="text-xs text-gray-500">100km</span>
+                      <span className="text-xs text-gray-500">10km</span>
                     </div>
                   </div>
-                  <div className="flex justify-end">
+                  <div className="flex justify-between">
+                    {radiusFilterActive && (
+                      <button
+                        className="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full"
+                        onClick={removeRadiusFilter}
+                      >
+                        Remover Filtro
+                      </button>
+                    )}
                     <button
-                      className="px-3 py-1 bg-[#4d87fc] text-white text-sm font-medium rounded-full"
-                      onClick={() => setShowRadiusMenu(false)}
+                      className="px-3 py-1 bg-[#4d87fc] text-white text-sm font-medium rounded-full ml-auto"
+                      onClick={applyRadiusFilter}
                     >
                       Aplicar
                     </button>
