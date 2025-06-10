@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import api from "../services/api";
+import { addFavorite, removeFavorite } from "../services/api";
 import { usePetContext } from "../contexts/PetContext";
 
 import { Card, Menu } from "../components";
@@ -10,6 +11,7 @@ import { Card, Menu } from "../components";
 const Home = () => {
   const [pets, setPets] = useState([]);
   const [selectedPetForDetails, setSelectedPetForDetails] = useState(null);
+  const [user, setUser] = useState(null);
 
   // Usar o contexto para obter o pet selecionado no menu
   const { selectedPet: selectedPetFromMenu } = usePetContext();
@@ -65,6 +67,48 @@ const Home = () => {
     return isNotOwnPet && matchesSearch && matchesGender && matchesAge && matchesSpecies && matchesBreed;
   });
 
+  // Função para extrair o ID do pet do usuário
+  const extractPetId = (userData) => {
+    if (!userData) return null;
+
+    // Se o usuário tem pets cadastrados
+    if (userData.yourAnimal && userData.yourAnimal.length > 0) {
+      return userData.yourAnimal[0]; // Pega o primeiro pet
+    }
+
+    // Se selectedPetFromMenu está disponível
+    if (selectedPetFromMenu && selectedPetFromMenu._id) {
+      return selectedPetFromMenu._id;
+    }
+
+    return null;
+  };
+
+  // Função para adicionar/remover favoritos
+  const toggleFavorite = async (targetPetId) => {
+    try {
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      const petId = extractPetId(userData);
+
+      if (!petId) {
+        alert('Você precisa ter um pet cadastrado para favoritar outros pets');
+        return;
+      }
+
+      const validPetId = String(petId);
+      console.log('🔄 Alterando favorito:', { petId: validPetId, targetPetId });
+
+      // Por enquanto, sempre adiciona aos favoritos
+      // Em uma implementação mais completa, você verificaria se já é favorito
+      await addFavorite(validPetId, targetPetId);
+      alert('Pet adicionado aos favoritos!');
+
+    } catch (error) {
+      console.error("❌ Erro ao alterar favorito:", error);
+      alert(`Erro ao alterar favorito: ${error.message}`);
+    }
+  };
+
   useEffect(() => {
     const fetchPets = async () => {
       try {
@@ -77,6 +121,14 @@ const Home = () => {
     };
 
     fetchPets();
+  }, []);
+
+  // Carregar dados do usuário
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
   }, []);
 
   // Fechar os menus quando clicar fora deles
@@ -351,10 +403,24 @@ const Home = () => {
                 className="relative w-full max-w-[260px] aspect-[4/5] rounded-[15px] bg-gradient-to-br from-pink-200 to-purple-200 p-4 shadow-md cursor-pointer flex flex-col justify-between"
               >
                 <div className="absolute top-2 right-2 flex gap-2">
-                  <button className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(pet._id);
+                    }}
+                    className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm hover:bg-[#00000077] transition duration-200"
+                    title="Adicionar aos favoritos"
+                  >
                     ❤️
                   </button>
-                  <button className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('Não interessar em:', pet.name);
+                    }}
+                    className="w-8 h-8 rounded-full bg-[#00000055] flex items-center justify-center text-white text-sm hover:bg-[#00000077] transition duration-200"
+                    title="Não tenho interesse"
+                  >
                     👎
                   </button>
                 </div>
@@ -403,8 +469,8 @@ const Home = () => {
               Localização: {selectedPetForDetails.location}
             </p>
             <img
-              src={"https://uploadpetlink.s3.us-east-1.amazonaws.com/"+ selectedPet.imgAnimal[0] || "placeholder.jpg"}
-              alt={selectedPet.name}
+              src={"https://uploadpetlink.s3.us-east-1.amazonaws.com/"+ selectedPetForDetails.imgAnimal[0] || "placeholder.jpg"}
+              alt={selectedPetForDetails.name}
               className="w-full h-64 object-cover rounded-lg mt-4"
             />
             <p className="text-gray-700 mt-4">{selectedPetForDetails.description}</p>

@@ -81,9 +81,12 @@ export const getFavorites = async (petId) => {
 export const addFavorite = async (petId, favoritePetId) => {
   try {
     console.log("💖 Adicionando aos favoritos:", { petId, favoritePetId });
-    
-    const response = await api.post(`/favorites/${petId}/${favoritePetId}`);
-    
+
+    const response = await api.post(`/favorites/add`, {
+      petId,
+      favoritePetId
+    });
+
     console.log("✅ Favorito adicionado:", response.data);
     return response.data;
   } catch (error) {
@@ -96,9 +99,12 @@ export const addFavorite = async (petId, favoritePetId) => {
 export const removeFavorite = async (petId, favoritePetId) => {
   try {
     console.log("💔 Removendo dos favoritos:", { petId, favoritePetId });
-    
-    const response = await api.delete(`/favorites/${petId}/${favoritePetId}`);
-    
+
+    const response = await api.post(`/favorites/remove`, {
+      petId,
+      favoritePetId
+    });
+
     console.log("✅ Favorito removido:", response.data);
     return response.data;
   } catch (error) {
