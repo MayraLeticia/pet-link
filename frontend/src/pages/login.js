@@ -33,8 +33,20 @@ const Login = () => {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
-    // Se há token local válido, redirecionar
-    if (token && userId && token.length > 10) {
+    // Verifica se o token está expirado
+    const isTokenValid = (token) => {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        return payload.exp && payload.exp > currentTime;
+      } catch (err) {
+        console.error("Token inválido:", err);
+        return false;
+      }
+    };
+
+    if (token && userId && isTokenValid(token)) {
+      console.log("Token válido. Redirecionando para o perfil.");
       router.push('/profile');
       return;
     }
